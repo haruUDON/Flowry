@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+
+<body>
+    <% if (title === '新規登録') { %>
+        <h2>新規登録</h2>
+        <form action="/signup" method="POST">
+            <input type="text" name="email" placeholder="Email" />
+            <input type="password" name="password" placeholder="Password" />
+            <input type="submit" value="新規登録"></button>
+        </form>
+        <div id="error-message">
+            <% if (errors && errors.length > 0) { %>
+                <ul>
+                    <% errors.forEach((error) => { %>
+                        <li><%= error %></li>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </div>
+    <% } else if (title === 'アカウントの確認') { %>
+        <p>アカウント確認メールを送信しました。届いたメールから認証を進めてください。</p>
+    <% } %>
+</body>
+
+</html>

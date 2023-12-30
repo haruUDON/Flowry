@@ -1,0 +1,795 @@
+@import url("//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css");
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: #fff4f5;
+}
+.menu li a{
+    display:block;
+    height:em;
+    width:5em;
+    text-indent:-500em;
+    line-height:5em;
+    text-align:center;
+    color: #ff5c62;
+    background: #fff4f5;
+    position: relative;
+    border-bottom: 1px solid #ffe2e3;
+    transition: background 0.3s ease-in-out;
+}
+.menu li a:before {
+  font-family: FontAwesome;
+  speak-as: none;
+  text-indent: 0em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4em;
+}
+.menu li a.access-search:before {
+  content: "\f002";
+}
+.menu li a.access-bookmark:before {
+  content: "\f187";
+}
+.menu li a.access-notification:before {
+  content: "\f0f3";
+}
+.menu li a.access-message:before {
+  content: "\f003";
+}
+.menu li a.access-profile:before {
+  content: "\f007";
+}
+.menu li a.access-home:before {
+  content: "\f015";
+}
+.menu li a:hover{
+  background: #ff5c62;
+  color: #fff;
+}
+.menu li.current a {
+  background: #ff5e5e;
+  color: #fff;
+}
+.menu li a.active {
+  background: #ff5e5e;
+  color: #fff;
+}
+.menu li a.active:after{
+    position:absolute;
+    left:5em;
+    top:0;
+    content:"";
+    border:2.5em solid transparent;
+    border-left-color:#ff5c62;
+    border-width: 2.5em 1em
+}
+.menu li{
+    position:relative;
+}
+.menu li:after{
+    content: attr(title);
+    position:absolute;
+    left:5em;
+    top:0;
+    height:5em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-transform:uppercase;
+    background:#ff5c62;
+    padding:2em;
+    transition: all 0.3s ease-in-out;
+    visibility:hidden;
+    opacity:0;
+}
+.menu li:hover:after{
+    visibility:visible;
+    opacity:1;
+}
+@media screen and (max-height: 34em){
+  .menu li{
+    font-size:70%;
+  }
+}
+
+.notifications-count-badge {
+  border: 2px solid #e9be00;
+  border-radius: 25px;
+  background-color: #fff3be;
+  padding: 0px 8px;
+  position: absolute;
+  display: none;
+  top: 3px;
+  left: 49px;
+}
+
+.notifications-count-number {
+  font-size: 12px;
+}
+
+/* ポスト作成のモーダルフォーム */
+
+.background-post-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+button#show-post-form {
+  font-weight: bold;
+  width: 150px;
+  height: 50px;
+  position: fixed;
+  padding: 10px 20px;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  bottom: 0;
+  left: 0;
+  margin: 0px 0px 15px 100px;
+}
+
+button#show-post-form:hover {
+  background-color: #ff4052;
+}
+
+.post-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%; 
+  width: 550px;  
+}
+
+.post-form form textarea {
+  font-family: arial;
+  font-size: 20px;
+  width: 90%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 8px 15px;
+  resize: none;
+}
+
+.post-form form button {
+  font-weight: bold;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  cursor: pointer;
+  float: right;
+}
+
+.post-form button:hover {
+  background-color: #ff4052;
+}
+
+button#close-post-form {
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: #333;
+}
+
+.reply-form-div {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff; /* 背景色を指定 */
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.reply-form textarea {
+  font-family: arial;
+  font-size: 20px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 8px 0px;
+  resize: none;
+  border: none;
+  outline: none;
+  overflow-y: hidden;
+  height: auto;
+}
+
+.reply-form button {
+  font-weight: bold;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 10px;
+  float: right;
+  cursor: pointer;
+}
+
+.reply-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reply-form button:hover {
+  background-color: #ff4052;
+}
+
+/* プロフィール編集のモーダルフォーム */
+
+.background-profile-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.edit-profile-form {
+  font-family: arial;
+  font-size: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%; 
+  width: 550px;  
+}
+
+button#close-profile-form {
+text-align: left;
+background-color: transparent;
+border: none;
+cursor: pointer;
+font-size: 15px;
+line-height: 1;
+color: #333;
+}
+
+.profile-input-box {
+  display: flex;
+  flex-direction: column;
+  line-height: 0;
+  height: auto;
+  border: 1px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: white; /* 背景色を指定 */
+}
+
+.profile-input-box p {
+  font-size: 60%;
+}
+
+.profile-input-box input[type="text"] {
+  font-family: arial;
+  font-size: 15px;
+  border: none;
+  outline: none;
+}
+
+.profile-input-box textarea {
+  font-family: arial;
+  font-size: 15px;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.profile-form-icon-container {
+  width: 90px; /* 円形の枠組みのサイズを指定 */
+  height: 90px;
+  border-radius: 50%; /* 円形の形状を作成 */
+  overflow: hidden; /* 画像を円形にクリッピング */
+  border: 2px solid #eeeeee;
+}
+
+.flex {
+  display: flex;
+}
+
+.upload-icon-img {
+  font-weight: bold;
+  padding: 3px 8px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-left: 45px;
+  align-self: center;
+}
+
+.upload-icon-img:hover {
+  background-color: #ff4052;
+}
+
+.profile-form-buttons {
+  display: flex;
+}
+
+.profile-form-buttons button[type="submit"] {
+  font-size: 12px;
+  display: block;
+  font-weight: bold;
+  width: 60px;
+  padding: 3px 8px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-top: 3px;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+
+.profile-form-buttons button[type="submit"]:hover {
+  background-color: #ff4052;
+}
+
+/* ポスト表示 */
+
+.container {
+  font-family: arial;
+  font-size: 20px;
+  margin: 25px;
+  height: 100%;
+  width: 600px;
+}
+
+.post {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff; /* 背景色を指定 */
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.solo-post {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff; /* 背景色を指定 */
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.solo-reaction {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff; /* 背景色を指定 */
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.solo-reaction button {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 15px;
+}
+
+.solo-reaction span {
+  font-size: 15px;
+  color: #989898;
+  padding: 0 4px;
+}
+
+.solo-reaction-flex {
+  display: flex;
+  justify-content: center;
+}
+
+.post-flex {
+  display: flex;
+}
+
+.post-icon-container {
+  width: 50px; /* 円形の枠組みのサイズを指定 */
+  height: 50px;
+  border-radius: 50%; /* 円形の形状を作成 */
+  overflow: hidden; /* 画像を円形にクリッピング */
+  margin-right: 13px;
+}
+
+.icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* アスペクト比を維持しつつ画像を全体にフィットさせる */
+  object-position: center center; /* 画像の中央に配置 */
+  border-radius: 50%; /* 画像を円形にクリッピング */
+}
+
+.icon-img:hover {
+  cursor: pointer;
+}
+
+.post-left {
+  width: 63px;
+}
+
+.post-right {
+  width: 503px;
+}
+
+.post-head {
+  display: flex;
+}
+
+.post-body {
+  padding: 7px;
+}
+
+.post-detail {
+  line-height: 0;
+}
+
+.post-content {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.display-name {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.display-name:visited {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.display-name:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.timestamp {
+  font-size: 80%;
+  color: gray;
+}
+
+.post-menu-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 85%;
+  color: #989898;
+  border: none;
+  background: none;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.post-menu-button:hover {
+  color: #3f3f3f;
+  cursor: pointer;
+}
+
+.popup-menu {
+  display: none; /* 初期状態では非表示 */
+  position: absolute;
+  list-style: none;
+  top: 0;
+  right: 0;
+  width: 170px;
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  box-shadow: 2px 2px 5px #d9d9d9;
+  margin-top: 10px;
+  margin-right: 10px;
+  z-index: 999;
+}
+
+.popup-menu button {
+  text-align: left;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.popup-menu button:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-delete-button {
+  color: red;
+}
+
+.reaction-box {
+  margin-top: 15px;
+}
+
+.reaction-box button {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.reaction-box span {
+  font-size: 12px;
+  color: #989898;
+  padding: 0 4px;
+}
+
+.reaction-child-box {
+  margin-right: 100px;
+}
+
+.post-comment {
+  color: #989898;
+}
+
+.post-comment:hover {
+  color: #00bfff;
+  cursor: pointer;
+}
+
+.post-like {
+  color: #989898;
+}
+
+.post-like:hover {
+  color: #fe4343;
+  cursor: pointer;
+}
+
+.post-bookmark {
+  color: #989898;
+}
+
+.post-bookmark:hover {
+  color: #ffd000;
+  cursor: pointer;
+}
+
+.post-share {
+  color: #989898;
+}
+
+.post-share:hover {
+  color: #3bdc00;
+  cursor: pointer;
+}
+
+.post:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* プロフィール設定 */
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  line-height: 0;
+  height: auto;
+  border: 2px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff; /* 背景色を指定 */
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.profile-header {
+  display: flex;
+}
+
+.profile-icon-container {
+  width: 100px; /* 円形の枠組みのサイズを指定 */
+  height: 100px;
+  border-radius: 50%; /* 円形の形状を作成 */
+  overflow: hidden; /* 画像を円形にクリッピング */
+  margin-right: 10px; /* アイコンと本文の間隔を設定 */
+}
+
+button#edit-profile-button {
+  font-weight: bold;
+  width: 180px;
+  height: 40px;
+  position: absolute;
+  padding: 10px 20px;
+  background-color: white;
+  color: black;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+  margin-top: 50px;
+  margin-left: 380px;
+}
+
+button#edit-profile-button:hover {
+  background-color: #efefef;
+  cursor: pointer;
+}
+
+.cancel-follow-button {
+  font-weight: bold;
+  width: 180px;
+  height: 40px;
+  position: absolute;
+  padding: 10px 20px;
+  background-color: white;
+  color: black;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+  margin-top: 50px;
+  margin-left: 380px;
+}
+
+.cancel-follow-button:hover {
+  background-color: #efefef;
+  cursor: pointer;
+}
+
+.follow-button {
+  font-weight: bold;
+  width: 180px;
+  height: 40px;
+  position: absolute;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+  margin-top: 50px;
+  margin-left: 380px;
+}
+
+.follow-button:hover {
+  background-color: #1e1e1e;
+  cursor: pointer;
+}
+
+.profile-content {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.profile-user-id {
+  color: #acacac;
+  font-size: 65%;
+  margin-top: 23px;
+  margin-bottom: 35px;
+}
+
+.profile-bio {
+  font-size: 85%;
+  padding-bottom: 3px;
+}
+
+.profile-input-text {
+  display: flex;
+}
+
+p#display-name-char-limit {
+  margin-left: auto;
+}
+
+p#biography-char-limit {
+  margin-left: auto;
+}
+
+.follow-content {
+  font-weight: bold;
+  font-size: 65%;
+  margin-top: 25px;
+}
+
+/* エラーメッセージ */
+
+.error {
+  font-family: arial;
+  font-size: 20px;
+  margin: 25px;
+  text-align: center;
+}
+
+.error button {
+  font-size: 16px;
+  font-weight: bold;
+  width: 60px;
+  padding: 5px 10px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+/* 通知 */
+
+.notification-heart-icon {
+  font-size: 35px;
+  color: #fe4343;
+  margin-top: 5px;
+  margin-left: 15px;
+  margin-right: 10px;
+}
+
+.notification-follow-icon {
+  font-size: 35px;
+  color: #00bfff;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+.notification-icon-container {
+  width: 35px; /* 円形の枠組みのサイズを指定 */
+  height: 35px;
+  border-radius: 50%; /* 円形の形状を作成 */
+  overflow: hidden; /* 画像を円形にクリッピング */
+  margin: 5px 0;
+}
+
+.notification-title {
+  font-size: 17px;
+}
+
+.notification-text {
+  padding-top: 10px;
+}
+
+.notification-text span {
+  font-size: 17px;
+  color: #6b6b6b;
+}

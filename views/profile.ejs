@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title><%= urlUser.display_name %></title>
+    <link rel="stylesheet" type="text/css" href="/stylesheet/index.css">
+</head>
+
+<body>
+    <ul class="menu">
+        <li title="home"><a href="/" class="access-home">ホーム</a></li>
+        <li title="search"><a href="#" class="access-search">検索</a></li>
+        <li title="notifications">
+          <a href="/notifications" class="access-notification">通知</a>
+          <div class="notifications-count-badge">
+            <span class="notifications-count-number"></span>
+          </div>
+        </li>
+        <li title="profile"><a class="active access-profile">プロフィール</a></li>
+        <li title="bookmarks"><a href="/bookmarks" class="access-bookmark">ブックマーク</a></li>
+        <li title="messages"><a href="#" class="access-message">メッセージ</a></li>
+    </ul>
+    <div class="container">
+        <div class="profile">
+            <div class="profile-header">
+                <div class="profile-icon-container">
+                  <img src="data:image/jpeg;base64, <%= urlUser.icon %>" alt="Icon" class="icon-img">
+                </div>
+                <% if(urlUser.email === user.email){ %>
+                    <button id="edit-profile-button">プロフィールを編集</button>
+                <% } else if(user.following.some(follow => follow.equals(urlUser._id))) { %>
+                    <button id="follow-button" class="cancel-follow-button" data-userid="<%= urlUser._id %>">フォロー中</button>
+                <% } else if (!user.following.some(follow => follow.equals(urlUser._id))) { %>
+                    <button id="follow-button" class="follow-button" data-userid="<%= urlUser._id %>">フォロー</button>
+                <% } %>
+            </div>
+            <div class="profile-content">
+              <% for (let i = 0; i < urlUser.display_name.length; i += 27) { %>
+                <p class="display-name"><%= urlUser.display_name.slice(i, i + 27) %></p>
+              <% } %>
+              <p class="profile-user-id">@</p>
+              <% for (let i = 0; i < urlUser.bio.length; i += 32) { %>
+                <p class="profile-bio"><%= urlUser.bio.slice(i, i + 32) %></p>
+              <% } %>
+              <p class="follow-content">
+                <span><%= urlUser.following.length %> フォロー中</span>
+                <span><%= urlUser.followers.length %> フォロワー</span>
+              </p>
+            </div>
+        </div>
+        <% posts.forEach((post) => { %>
+          <div class="post" id="post" onclick="redirectToURL('/post/<%= post._id %>')">
+            <div class="post-flex">
+              <div class="post-left">
+                <div class="post-icon-container">
+                  <img src="data:image/jpeg;base64, <%= post.user.icon %>" alt="Icon" class="icon-img">
+                </div>
+              </div>
+              <div class="post-right">
+                <p class="post-detail">
+                  <span><a href="/profile/<%= post.user.id %>" class="display-name"><%= post.user.display_name.length > 20 ? post.user.display_name.slice(0, 20) + '...' : post.user.display_name %></a></span>
+                  <span class="timestamp">
+                    <%= Math.floor((new Date() - post.uploaded_at) / (1000 * 60 * 60)) %>時間
+                  </span>
+                </p>
+                <button class="fa-solid fa-ellipsis post-menu-button"></button>
+                <div class="popup-menu">
+                  <% if(post.user.email === user.email){ %>
+                    <button class="fa-regular fa-trash-can menu-delete-button" data-postid="<%= post._id %>"> 削除</button>
+                  <% }; %>
+                </div>
+                <span class="post-content"><%= post.text %></span>
+                <div class="reaction-box">
+                  <div class="flex">
+                    <div class="reaction-child-box">
+                      <button class="fa-regular fa-comment post-comment"></button>
+                    </div>
+                    <div class="reaction-child-box">
+                      <% if(user.liked_posts.includes(post._id)){ %>
+                        <button class="fa-solid fa-heart post-like" data-postid="<%= post._id %>"></button>
+                      <% } else { %>
+                        <button class="fa-regular fa-heart post-like" data-postid="<%= post._id %>"></button>
+                      <% } %>
+                      <span>
+                        <% if(post.likes.length > 0){ %>
+                          <%= post.likes.length %>
+                        <% } %>
+                      </span>
+                    </div>
+                    <div class="reaction-child-box">
+                      <% if(user.bookmarked_posts.includes(post._id)){ %>
+                        <button class="fa-solid fa-bookmark post-bookmark" data-postid="<%= post._id %>"></button>
+                      <% } else { %>
+                        <button class="fa-regular fa-bookmark post-bookmark" data-postid="<%= post._id %>"></button>
+                      <% } %>
+                      <span>
+                        <% if(post.bookmarks.length > 0){ %>
+                          <%= post.bookmarks.length %>
+                        <% } %>
+                      </span>
+                    </div>
+                    <div class="reaction-child-box">
+                      <button class="fa-solid fa-arrow-up-from-bracket post-share"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+    </div>
+    <button id="show-post-form">投稿</button>
+    <div class="background-post-form"></div>
+    <div class="background-profile-form"></div>
+    <div class="post-form">
+      <button id="close-post-form">✖</button>
+      <form action="/post" method="POST">
+        <textarea placeholder="何かを投稿..." name="text"></textarea>
+        <button type="submit">投稿</button>
+      </form>
+    </div>
+    <div class="edit-profile-form">
+      <form action="/profile" method="POST" enctype="multipart/form-data">
+        <div class="profile-form-buttons">
+          <button type="button" id="close-profile-form">✖</button>
+          <button type="submit">保存</button>
+        </div>
+        <div class="profile-input-box">
+          <div class="flex">
+            <div class="profile-form-icon-container">
+              <img src="data:image/jpeg;base64, <%= urlUser.icon %>" alt="Icon" class="icon-img">
+            </div>
+            <input type="file" name="image" id="image" class="upload-icon-img" accept="image/*" required>
+          </div>
+        </div>
+        <div class="profile-input-box">
+          <div class="profile-input-text">
+            <p>名前</p>
+            <p id="display-name-char-limit"><%= urlUser.display_name.length %> / 50</p> <!-- 文字数表示 -->
+          </div>
+          <input type="text" name="displayName" id="display-name-input" value="<%= urlUser.display_name %>">
+        </div>
+        <div class="profile-input-box">
+          <div class="profile-input-text">
+            <p>自己紹介</p>
+            <p id="biography-char-limit"><%= urlUser.bio.length %> / 160</p> <!-- 文字数表示 -->
+          </div>
+          <textarea name="biography" id="biography-textarea"><%= urlUser.bio %></textarea>
+        </div>
+      </form>
+    </div>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/javascript/index.js"></script>
+    <script src="/javascript/profile.js"></script>
+</body>
+
+</html>
