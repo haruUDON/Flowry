@@ -129,6 +129,10 @@ app.use(function(err, req, res, next) {
         res.status(400).render('error', { message: "投稿が見つかりませんでした" });
         return;
     }
+    if (err.message === 'User not found'){
+        res.status(400).render('error', { message: "ユーザーが見つかりませんでした" });
+        return;
+    }
     if (err.message === 'Permission denied'){
         res.status(500).render('error', { message: "この操作に必要な権限がありません" });
         return;

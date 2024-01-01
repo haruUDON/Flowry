@@ -13,7 +13,7 @@ const loginCheck = (req, res, next) => {
     }
 };
 
-router.get('/', loginCheck, async (req, res) => {
+router.get('/', loginCheck, async (req, res, next) => {
   let bookmarkedPosts = [];
   try {
     const user = await User.findOne({ email: req.session.user })
@@ -31,13 +31,15 @@ router.get('/', loginCheck, async (req, res) => {
   }
 });
 
-router.post('/', loginCheck, async (req, res) => {
+router.post('/', loginCheck, async (req, res, next) => {
   const postId = req.body.postId;
   const email = req.session.user;
   try {
     const user = await User.findOne({ email: email });
-    const post = await Post.findById(postId);
-    if (!post) return next(new Error('Post not found'));
+    const post = await Post.findOne({ _id: postId })
+      .catch(() => {
+          return next(new Error('Post not found'));
+      });
     if (user.bookmarked_posts.includes(postId)){
         user.bookmarked_posts.pull(postId);
         post.bookmarks.pull(user._id);

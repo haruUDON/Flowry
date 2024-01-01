@@ -13,11 +13,11 @@ const loginCheck = (req, res, next) => {
     }
 };
 
-function getRandomItemsFromArray(arr, count) {
+const getRandomItemsFromArray = (arr, count) => {
     return arr.slice().sort(() => Math.random() - 0.5).slice(0, count);
 };
 
-router.get('/', loginCheck, async (req, res) => {
+router.get('/', loginCheck, async (req, res, next) => {
     let selectedPosts = [];
     const oneDayAgo = new Date();
     oneDayAgo.setDate(oneDayAgo.getDate() - 1);
@@ -26,48 +26,24 @@ router.get('/', loginCheck, async (req, res) => {
         parent_post: null
     };
     try {
+        const user = await User.findOne({ email: req.session.user });
         const posts = await Post.find(query)
         .populate({
             path: 'user'
         })
         .exec();
         selectedPosts = getRandomItemsFromArray(posts, 30);
+        res.render('index', { user, posts: selectedPosts });
     } catch (err) {
         return next(err);
     }
-    const user = await User.findOne({ "email": req.session.user });
-    res.render('index', { user, posts: selectedPosts });
 });
 
 router.post('/', loginCheck, async (req, res) => {
     const socketId = req.body.socketId;
-    const user = await User.findOne({ "email": req.session.user });
+    const user = await User.findOne({ email: req.session.user });
     user.socket_id = socketId;
     await user.save();
-});
-
-router.get('/post/:postId', loginCheck, async (req, res) => {
-    const postId = req.params.postId;
-    const email = req.session.user;
-    try {
-        const post = await Post.findOne({ _id: postId })
-        .populate([
-            {
-                path: 'user'
-            },
-            {
-                path: 'replies',
-                populate: {
-                    path: 'user'
-                }
-            }
-        ])
-        .exec();
-        const user = await User.findOne({ email: email});
-        res.render('post', { post, user });
-    } catch (error) {
-        console.log(error);
-    }
 });
 
 module.exports = router;

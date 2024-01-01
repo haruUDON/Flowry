@@ -73,17 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify(data),
     })
     .then(response => {
-      return response.json();
-    })
-    .then(data => {
-      if (followButton.classList.contains("follow-button")) {
-        followButton.textContent = 'フォロー中';
-        followButton.classList.remove("follow-button");
-        followButton.classList.add("cancel-follow-button");
-      } else if (followButton.classList.contains("cancel-follow-button")) {
-        followButton.textContent = 'フォロー';
-        followButton.classList.remove("cancel-follow-button");
-        followButton.classList.add("follow-button");
+      if (response.status === 200){
+        if (followButton.classList.contains("follow-button")) {
+          followButton.textContent = 'フォロー中';
+          followButton.classList.remove("follow-button");
+          followButton.classList.add("cancel-follow-button");
+        } else if (followButton.classList.contains("cancel-follow-button")) {
+          followButton.textContent = 'フォロー';
+          followButton.classList.remove("cancel-follow-button");
+          followButton.classList.add("follow-button");
+        }
       }
     })
     .catch(error => {

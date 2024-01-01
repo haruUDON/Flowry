@@ -6,14 +6,41 @@ const User = modelUser.User;
 const Post = modelPost.Post;
 
 const loginCheck = (req, res, next) => {
-    if(req.session.user) {
+    if(req.session.user){
         next();
     } else {
         res.redirect('/login');
     }
 };
 
-router.post('/', loginCheck, async (req, res) => {
+router.get('/:postId', loginCheck, async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const email = req.session.user;
+        const post = await Post.findOne({ _id: postId })
+        .populate([
+            {
+                path: 'user'
+            },
+            {
+                path: 'replies',
+                populate: {
+                    path: 'user'
+                }
+            }
+        ])
+        .exec()
+        .catch(() => {
+            throw next(new Error('Post not found'));
+        });
+        const user = await User.findOne({ email: email});
+        res.render('post', { post, user });
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post('/', loginCheck, async (req, res, next) => {
     try {
         const text = req.body.text;
         if (!text) return res.redirect('/');
@@ -33,11 +60,11 @@ router.post('/', loginCheck, async (req, res) => {
     }
 });
 
-router.post('/reply/:parentId', loginCheck, async (req, res) => {
+router.post('/reply/:parentId', loginCheck, async (req, res, next) => {
     const text = req.body.text;
     const parentId = req.params.parentId;
 
-    if (!text) return res.redirect('/');
+    if (!text) return res.status(500).redirect('/post/' + parentId);
 
     try {
         const user = await User.findOne({ email: req.session.user });
@@ -82,15 +109,15 @@ router.post('/reply/:parentId', loginCheck, async (req, res) => {
     }
 });
 
-router.post('/delete', loginCheck, async (req, res) => {
+router.post('/delete', loginCheck, async (req, res, next) => {
     const postId = req.body.postId;
     const email = req.session.user;
     try {
         const user = await User.findOne({ email: email });
-        const post = await Post.findById(postId);
-        
-        if (!post) return next(new Error('Post not found'));
-
+        const post = await Post.findOne({ _id: postId })
+        .catch(() => {
+            return next(new Error('Post not found'));
+        });
         if (user._id.toString() !== post.user.toString()) return next(new Error('Permission denied'));
 
         await User.updateMany({ liked_posts: postId }, { $pull: { liked_posts: postId } });

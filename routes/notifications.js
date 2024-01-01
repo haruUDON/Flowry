@@ -11,7 +11,7 @@ const loginCheck = (req, res, next) => {
     }
 };
 
-router.get('/', loginCheck, async (req, res) => {
+router.get('/', loginCheck, async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.session.user })
     .populate({
@@ -23,16 +23,15 @@ router.get('/', loginCheck, async (req, res) => {
     }).exec();
     user.notifications.forEach(n => {
       if (!n.is_read) n.is_read = true;
-    })
-    user.save();
+    });
+    await user.save();
     const notifications = user.notifications;
-    notifications.sort((a,b) => {
+    notifications.sort((a, b) => {
       return new Date(b.received_at) - new Date(a.received_at);
     });
     res.render('notifications', { user, notifications : notifications }); 
-  } catch (error) {
-    console.log('error');
-    res.redirect('/');
+  } catch (err) {
+    next(err);
   }
 });
 

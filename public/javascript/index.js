@@ -92,15 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify(data),
         })
         .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            if (button.classList.contains("fa-regular")) {
-                button.classList.remove("fa-regular");
-                button.classList.add("fa-solid");
-            } else if (button.classList.contains("fa-solid")) {
-                button.classList.remove("fa-solid");
-                button.classList.add("fa-regular");
+            if (response.status === 200){
+                if (button.classList.contains("fa-regular")) {
+                    button.classList.remove("fa-regular");
+                    button.classList.add("fa-solid");
+                } else if (button.classList.contains("fa-solid")) {
+                    button.classList.remove("fa-solid");
+                    button.classList.add("fa-regular");
+                }
             }
         })
         .catch(error => {
