@@ -32,6 +32,7 @@ const post = require('./routes/post.js');
 const like = require('./routes/like.js');
 const bookmarks = require('./routes/bookmarks.js');
 const notifications = require('./routes/notifications.js');
+const search = require('./routes/search.js');
 const api = require('./routes/api.js');
 const deleteAccount = require('./routes/delete-account');
 
@@ -92,6 +93,7 @@ app.use('/post', post);
 app.use('/like', like);
 app.use('/bookmarks', bookmarks);
 app.use('/notifications', notifications);
+app.use('/search', search);
 app.use('/api', api);
 app.use('/delete-account', deleteAccount);
 
@@ -114,7 +116,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-if (app.get('env') === 'development') {
+if (process.env.NODE_ENV === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
@@ -123,7 +125,7 @@ if (app.get('env') === 'development') {
     });
 }
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
     res.status(err.status || 500);
     if (err.message === 'Post not found'){
         res.status(400).render('error', { message: "投稿が見つかりませんでした" });

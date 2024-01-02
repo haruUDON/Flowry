@@ -793,3 +793,43 @@ p#biography-char-limit {
   font-size: 17px;
   color: #6b6b6b;
 }
+
+/* 検索 */
+
+.search {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  padding: 5px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+}
+
+.search-flex {
+  display: flex;
+}
+
+.search-left span {
+  padding: 11px;
+  color: #b8b8b8;
+}
+
+.search-right {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+}
+
+.search-right input {
+  font-size: 15px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 11px;
+  resize: none;
+  border: none;
+  outline: none;
+}
