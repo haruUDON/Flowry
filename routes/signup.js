@@ -27,14 +27,17 @@ function isValidPassword(password) {
     return password.length >= 8;
 }
 
-router.get('/', function(req, res) {
-    res.render('signup', { errors: [], title: '新規登録' });
+router.get('/', (req, res) => {
+    res.render('signup', { errors: [], title: 'サインアップ' });
 });
 
-router.post('/', async function(req, res) {
+router.post('/', async (req, res) => {
     const errors = [];
-    if (await UserAuth.findOne({ "email": req.body.email })){
+    if (await UserAuth.findOne({ email: req.body.email })){
         errors.push('このメールアドレスは既に使用されています。');
+    }
+    if (!req.body.name.length <= 50) {
+        errors.push('名前は50文字以下で入力してください。');
     }
     if (!isValidPassword(req.body.password)){
         errors.push('パスワードは8文字以上で入力してください。');
@@ -43,7 +46,7 @@ router.post('/', async function(req, res) {
         errors.push('正しいメールアドレスを入力してください。');
     }
     if (errors.length > 0) {
-        res.render('signup', { errors, title: '新規登録' });
+        res.render('signup', { errors, title: 'サインアップ' });
         return;
     }
     const newUser = new UserTmp(req.body);
@@ -60,7 +63,7 @@ router.post('/', async function(req, res) {
             const mailData = {
                 from: "haruzpasta@gmail.com",
                 to: email,
-                subject: `アカウントの確認`,
+                subject: `メールアドレスの確認`,
                 text: "以下のリンクからアカウントの確認を行ってください｡\n\n" + url
             };
             transporter.sendMail(mailData, (err, info) => {

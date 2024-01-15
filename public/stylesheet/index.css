@@ -833,3 +833,38 @@ p#biography-char-limit {
   border: none;
   outline: none;
 }
+
+/* ログイン */
+
+.login-container {
+  font-family: arial;
+  font-size: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 2px solid #eeeeee;
+  box-shadow: 2px 2px 5px #eeeeee;
+  max-width: 90%; 
+  width: 550px;
+}
+
+.login-input-box {
+  display: flex;
+  flex-direction: column;
+  line-height: 0;
+  height: auto;
+  border: 1px solid #eeeeee; /* 四角形の境界線を2pxの実線で描画 */
+  padding: 10px;
+  margin: 5px;
+  background-color: white;
+}
+
+.login-input-box input {
+  font-family: arial;
+  font-size: 15px;
+  border: none;
+  outline: none;
+}
