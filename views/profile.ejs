@@ -20,6 +20,9 @@
         <li title="profile"><a class="active access-profile">プロフィール</a></li>
         <li title="bookmarks"><a href="/bookmarks" class="access-bookmark">ブックマーク</a></li>
         <li title="messages"><a href="#" class="access-message">メッセージ</a></li>
+        <div class="menu-icon-container">
+          <img src="data:image/jpeg;base64, <%= user.icon %>" alt="Icon" class="icon-img">
+        </div>
     </ul>
     <div class="container">
         <div class="profile">
@@ -39,7 +42,7 @@
               <% for (let i = 0; i < urlUser.display_name.length; i += 27) { %>
                 <p class="display-name"><%= urlUser.display_name.slice(i, i + 27) %></p>
               <% } %>
-              <p class="profile-user-id">@</p>
+              <p class="profile-user-id">@<%= urlUser._id %></p>
               <% for (let i = 0; i < urlUser.bio.length; i += 32) { %>
                 <p class="profile-bio"><%= urlUser.bio.slice(i, i + 32) %></p>
               <% } %>
@@ -75,6 +78,11 @@
                   <div class="flex">
                     <div class="reaction-child-box">
                       <button class="fa-regular fa-comment post-comment"></button>
+                      <span>
+                        <% if(post.replies.length > 0){ %>
+                          <%= post.replies.length %>
+                        <% } %>
+                      </span>
                     </div>
                     <div class="reaction-child-box">
                       <% if(user.liked_posts.includes(post._id)){ %>

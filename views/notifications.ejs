@@ -20,6 +20,9 @@
     <li title="profile"><a href="/profile/<%= user._id %>" class="access-profile">プロフィール</a></li>
     <li title="bookmarks"><a href="/bookmarks" class="access-bookmark">ブックマーク</a></li>
     <li title="messages"><a href="#" class="access-message">メッセージ</a></li>
+    <div class="menu-icon-container">
+      <img src="data:image/jpeg;base64, <%= user.icon %>" alt="Icon" class="icon-img">
+    </div>
   </ul>
   <div class="container">
     <% notifications.forEach((notification) => { %>
@@ -77,6 +80,11 @@
                       <div class="flex">
                         <div class="reaction-child-box">
                           <button class="fa-regular fa-comment post-comment"></button>
+                          <span>
+                            <% if(notification.post.replies.length > 0){ %>
+                              <%= notification.post.replies.length %>
+                            <% } %>
+                          </span>
                         </div>
                         <div class="reaction-child-box">
                           <% if(user.liked_posts.includes(notification.post._id)){ %>

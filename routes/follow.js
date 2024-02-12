@@ -49,7 +49,7 @@ router.post('/', loginCheck, async (req, res, next) => {
                 });
             }
         }
-        // ユーザーを保存
+        await target.save();
         await user.save();
         return res.status(200).json({});
       } catch (err) {

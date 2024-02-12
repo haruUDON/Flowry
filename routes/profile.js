@@ -23,9 +23,9 @@ router.get('/:userId', loginCheck, async (req, res, next) => {
     const email = req.session.user;
     const userId = req.params.userId;
     const urlUser = await User.findOne({ _id: userId })
-      .catch(() => {
-        throw next(new Error('User not found'));
-      });
+    .catch(() => {
+      throw next(new Error('User not found'));
+    });
 
     const posts = await Post.find({ user: userId })
       .populate({ path: 'user' })

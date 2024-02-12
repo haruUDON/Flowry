@@ -8,7 +8,6 @@ const modelAuth = require('../models/auth.js');
 const UserTmp = modelTmp.UserTmp;
 const UserAuth = modelAuth.UserAuth;
 
-// メール送信設定
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
@@ -31,53 +30,54 @@ router.get('/', (req, res) => {
     res.render('signup', { errors: [], title: 'サインアップ' });
 });
 
-router.post('/', async (req, res) => {
-    const errors = [];
-    if (await UserAuth.findOne({ email: req.body.email })){
-        errors.push('このメールアドレスは既に使用されています。');
+router.post('/', async (req, res, next) => {
+    try {
+        const errors = [];
+
+        if (await UserAuth.findOne({ email: req.body.email })){
+            errors.push('このメールアドレスは既に使用されています。');
+        }
+        if (req.body.name.length > 50) {
+            console.log(req.body.name.length);
+            errors.push('名前は50文字以下で入力してください。');
+        }
+        if (!isValidPassword(req.body.password)){
+            errors.push('パスワードは8文字以上で入力してください。');
+        }
+        if (!isValidEmail(req.body.email)){
+            errors.push('正しいメールアドレスを入力してください。');
+        }
+        if (errors.length > 0) {
+            console.log(errors);
+            res.render('signup', { errors, title: 'サインアップ' });
+            return;
+        }
+
+        const newUser = new UserTmp(req.body);
+        let token = crypto.randomBytes(16).toString('hex');
+        let password = await bcrypt.hash(newUser.password, 10);
+        const email = newUser.email;
+        const now = new Date;
+        const expires = new Date(now.getTime() + 10 * 60000);
+        let url = `localhost:3000/auth/email/${token}`;
+        newUser.password = password;
+        newUser.token = token;
+        newUser.expires = expires;
+
+        newUser.save();
+
+        const mailData = {
+            from: "flowry.info@gmail.com",
+            to: email,
+            subject: `メールアドレスの確認`,
+            text: `Flowryへご登録いただき、ありがとうございます。\n\n下記のリンクからメールアドレスの認証を行ってください。\n\n${url}\n\nリンクは送信後10分間のみ有効です。\n\n※本メールは自動送信メールとなります。\n 本メールにご返信いただきましてもスタッフは確認ができません。\n\n※このメールに心当たりがない場合はメールを破棄してください。`
+        };
+
+        await transporter.sendMail(mailData);
+        res.render('signup', { errors: [] ,title: 'アカウントの確認' });
+    } catch (err) {
+        next(err);
     }
-    if (!req.body.name.length <= 50) {
-        errors.push('名前は50文字以下で入力してください。');
-    }
-    if (!isValidPassword(req.body.password)){
-        errors.push('パスワードは8文字以上で入力してください。');
-    }
-    if (!isValidEmail(req.body.email)){
-        errors.push('正しいメールアドレスを入力してください。');
-    }
-    if (errors.length > 0) {
-        res.render('signup', { errors, title: 'サインアップ' });
-        return;
-    }
-    const newUser = new UserTmp(req.body);
-    let token = crypto.randomBytes(16).toString('hex');
-    let password = await bcrypt.hash(newUser.password, 10);
-    const email = newUser.email;
-    const now = new Date;
-    const expiration = now.setHours(now.getHours() + 1);
-    let url = 'localhost:3000/auth/email/' + token + '?expires=' + expiration;
-    newUser.password = password;
-    newUser.token = token;
-    newUser.save()
-        .then(() => {
-            const mailData = {
-                from: "haruzpasta@gmail.com",
-                to: email,
-                subject: `メールアドレスの確認`,
-                text: "以下のリンクからアカウントの確認を行ってください｡\n\n" + url
-            };
-            transporter.sendMail(mailData, (err, info) => {
-                if (err) {
-                    console.log(err); 
-                } else {
-                    console.log(info);
-                    res.render('signup', { errors: [] ,title: 'アカウントの確認' });
-                }
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
 });
 
 module.exports = router;

@@ -125,6 +125,17 @@ body {
   font-size: 12px;
 }
 
+.menu-icon-container {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  bottom: 0;
+  left: 0;
+  margin: 0px 0px 15px 10px;
+}
+
 /* ポスト作成のモーダルフォーム */
 
 .background-post-form {
@@ -573,7 +584,7 @@ color: #333;
 }
 
 .reaction-child-box {
-  margin-right: 100px;
+  flex: 1;
 }
 
 .post-comment {

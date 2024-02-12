@@ -7,48 +7,45 @@ const UserTmp = modelTmp.UserTmp;
 const User = modelUser.User;
 const UserAuth = modelAuth.UserAuth;
 
-
 router.get('/email/:token', async function(req, res, next){
-    const now = new Date();
-    if (now.getTime() > parseInt(req.query.expires)){
-        res.render('auth', { title: '有効期限切れ'});
-    } else {
-        const user = await UserTmp.findOne({ "token": req.params.token });
-        if (user) {
-            const password = user.password;
-            const email = user.email;
-            const userData = {
-                email: email,
-                created_at: now,
-                updated_at: now,
-                deleted_at: null,
-                notifications: []
-            }
-            let newUser = await User.findOne({ "email": email }); //論理削除したユーザーかどうか
-            if (newUser){
-                newUser.deleted_at = null;
-            } else {
-                newUser = new User(userData);
-                newUser.display_name = '名無し';
-                newUser.bio = '';
-            }
-            const newAuthUser = new UserAuth(userData);
-            newAuthUser.password = password;
-            newUser.save()
-            .then(() => {
-                newAuthUser.save()
-                .then(async () => {
-                    try {
-                        await UserTmp.deleteOne(user);
-                        res.render('auth', { title: '認証成功' });
-                    } catch (err) {
-                        console.log(err);
-                    }
-                });
-            }); //catch消したの不安
-        } else {
-            res.render('auth', { title: '認証失敗'});
+    try {
+        const user = await UserTmp.findOne({ token: req.params.token });
+
+        if (!user) {
+            return res.render('auth', { title: '認証失敗'});
         }
+
+        const now = new Date();
+
+        if (now.getTime() > user.expires){
+            await UserTmp.deleteOne(user);
+            return res.render('auth', { title: '有効期限切れ'});
+        }
+
+        const password = user.password;
+        const email = user.email;
+        const name = user.name;
+
+        let newUser = await User.findOne({ email: email });
+
+        if (newUser){
+            newUser.deleted_at = null;
+        } else {
+            newUser = new User();
+            newUser.display_name = name;
+            newUser.email = email;
+        }
+        const newAuthUser = new UserAuth();
+        newAuthUser.email = email;
+        newAuthUser.password = password;
+
+        await newUser.save();
+        await newAuthUser.save();
+        await UserTmp.deleteOne(user);
+
+        return res.render('auth', { title: '認証成功' });
+    } catch (err) {
+        next(err);
     }
 });
 

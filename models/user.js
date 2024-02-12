@@ -1,16 +1,31 @@
 const mongoose = require('mongoose');
 const NotificationSchema = require('./notification');
 
+require('dotenv').config();
+
 const UserSchema = new mongoose.Schema({
-    display_name  : String,
-    bio  : String,
-    email  : String,
-    created_at  : Date,
-    updated_at  : Date,
-    deleted_at  : Date,
-    socket_id  : String,
-    icon: { //BASE64
+    display_name: String,
+    bio: {
         type: String,
+        default: ''
+    },
+    email  : String,
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    },
+    deleted_at: {
+        type: Date,
+        default: null
+    },
+    socket_id  : String,
+    icon: {
+        type: String,
+        default: process.env.INITIAL_ICON
     },
     liked_posts: [
         {
