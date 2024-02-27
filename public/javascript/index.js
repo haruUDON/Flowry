@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const postDeleteButtons = document.querySelectorAll('.menu-delete-button');
     const postMenuButtons = document.querySelectorAll('.post-menu-button');
     const popupMenus = document.querySelectorAll('.popup-menu');
+    const menuIconButton = document.querySelector('.menu-icon-container');
+    const userMenu = document.querySelector('.user-menu');
+    const userMenuLogoutButton = document.getElementById('user-logout-button');
 
     socket.on('connected', (data) => {
         fetch('/', {
@@ -63,10 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (event) => {
         if (!event.target.classList.contains('post-menu-button')) {
+            userMenu.style.display = 'none';
             popupMenus.forEach((menu) => {
                 menu.style.display = 'none';
                 event.stopPropagation();
             });
+
         }
     });
 
@@ -80,6 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
             popupMenus[index].style.display = 'block';
             event.stopPropagation();
         });
+    });
+
+    menuIconButton.addEventListener('click', (event) => {
+        userMenu.style.display = 'block';
+        event.stopPropagation();
+    });
+
+    userMenuLogoutButton.addEventListener('click', (event) => {
+        redirectToURL('/logout');
+        event.stopPropagation();
     });
 
     function sendLike(postId, button) {

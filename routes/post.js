@@ -42,8 +42,19 @@ router.get('/:postId', loginCheck, async (req, res, next) => {
 
 router.post('/', loginCheck, async (req, res, next) => {
     try {
-        const text = req.body.text;
+        let text = req.body.text;
         if (!text) return res.redirect('/');
+        text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        text = text.replace(
+            /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/gi,
+            function(match) {
+              if (match.length > 30) {
+                  return '<a href="' + match + '">' + match.slice(0, 30) + '...</a>';
+              } else {
+                  return '<a href="' + match + '">' + match + '</a>';
+              }
+            }
+        );
         const user = await User.findOne({ email: req.session.user });
         const now = new Date();
         const userId = user._id;

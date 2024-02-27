@@ -125,6 +125,34 @@ body {
   font-size: 12px;
 }
 
+.user-menu {
+  display: none; /* 初期状態では非表示 */
+  position: fixed;
+  list-style: none;
+  bottom: 0;
+  left: 0;
+  width: 220px;
+  background-color: hsl(0, 0%, 100%);
+  border: 1px solid #d9d9d9;
+  box-shadow: 2px 2px 5px #d9d9d9;
+  border-radius: 8px;
+  margin: 0px 0px 83px 8px;
+  z-index: 999;
+}
+
+.user-menu button {
+  text-align: left;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.user-menu button:hover {
+  background-color: #f5f5f5;
+}
+
 .menu-icon-container {
   position: fixed;
   width: 60px;
@@ -496,6 +524,10 @@ color: #333;
   line-height: 20px;
 }
 
+.post-content a,a:visited{
+  color: #439ff0;
+}
+
 .display-name {
   font-weight: bold;
   color: black;
@@ -744,6 +776,15 @@ p#biography-char-limit {
   font-weight: bold;
   font-size: 65%;
   margin-top: 25px;
+}
+
+.follow-content span {
+  text-decoration: none;
+}
+
+.follow-content span:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 /* エラーメッセージ */

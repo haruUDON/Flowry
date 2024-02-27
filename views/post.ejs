@@ -20,6 +20,10 @@
     <li title="profile"><a href="/profile/<%= user._id %>" class="access-profile">プロフィール</a></li>
     <li title="bookmarks"><a href="/bookmarks" class="access-bookmark">ブックマーク</a></li>
     <li title="messages"><a href="#" class="access-message">メッセージ</a></li>
+    <div class="user-menu">
+      <button>設定</button>
+      <button id="user-logout-button">ログアウト</button>
+    </div>
     <div class="menu-icon-container">
       <img src="data:image/jpeg;base64, <%= user.icon %>" alt="Icon" class="icon-img">
     </div>
@@ -45,7 +49,7 @@
         </div>
       </div>
       <div class="post-body">
-        <span class="post-content"><%= post.text %></span>
+        <span class="post-content"><%- post.text %></span>
       </div>
     </div>
 
