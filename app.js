@@ -147,4 +147,4 @@ app.use((err, req, res, next) => {
 module.exports = app;
 
 
-server.listen(PORT, console.log("server runnning"));
+server.listen(PORT, console.log("server running"));

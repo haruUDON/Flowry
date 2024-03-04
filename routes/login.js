@@ -5,7 +5,11 @@ const modelAuth = require('../models/auth');
 const UserAuth = modelAuth.UserAuth;
 
 router.get('/', function(req, res) {
-    res.render('login', { errors: [] });
+    if(req.session.user){
+        res.redirect('/');
+    } else {
+        res.render('login', { errors: [] });
+    }
 });
 
 router.post('/', async function(req, res) {

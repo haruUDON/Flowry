@@ -27,7 +27,11 @@ function isValidPassword(password) {
 }
 
 router.get('/', (req, res) => {
-    res.render('signup', { errors: [], title: 'サインアップ' });
+    if(req.session.user){
+        res.redirect('/');
+    } else {
+        res.render('signup', { errors: [], title: 'サインアップ' });
+    }
 });
 
 router.post('/', async (req, res, next) => {
@@ -59,7 +63,7 @@ router.post('/', async (req, res, next) => {
         const email = newUser.email;
         const now = new Date;
         const expires = new Date(now.getTime() + 10 * 60000);
-        let url = `localhost:3000/auth/email/${token}`;
+        let url = `http://163.44.102.111/auth/email/${token}`;
         newUser.password = password;
         newUser.token = token;
         newUser.expires = expires;
