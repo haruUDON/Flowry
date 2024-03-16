@@ -113,7 +113,7 @@
       <div class="post" id="post" onclick="redirectToURL('/post/<%= p._id %>')">
         <div class="post-flex">
           <div class="post-left">
-            <div class="post-icon-container">
+            <div class="post-icon-container" onclick="redirectToURL('/profile/<%= p.user.id %>')">
               <img src="data:image/jpeg;base64, <%= p.user.icon %>" alt="Icon" class="icon-img">
             </div>
           </div>

@@ -17,7 +17,6 @@ router.get('/notifications/unread-count', loginCheck, async (req, res) => {
         if (!user) {
             return res.json({ unreadCount: 0 });
         }
-        // 未読の通知数を取得
         const unreadCount = user.notifications.filter(notification => !notification.is_read).length;
         res.json({ unreadCount });
     } catch (error) {

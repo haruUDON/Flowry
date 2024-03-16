@@ -24,7 +24,7 @@ router.post('/', loginCheck, async (req, res, next) => {
         const now = new Date();
         user.deleted_at = now;
         await user.save();
-        await UserAuth.findOneAndRemove({ email: email }); //Authの情報は物理削除
+        await UserAuth.findOneAndRemove({ email: email });
         req.session.destroy();
         res.redirect('/');
     } catch (err) {

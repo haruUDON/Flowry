@@ -27,13 +27,14 @@ router.get('/:userId', loginCheck, async (req, res, next) => {
       throw next(new Error('User not found'));
     });
 
+    if (urlUser.deleted_at) throw next(new Error('User was deleted'));
+
     const posts = await Post.find({ user: userId })
       .populate({ path: 'user' })
       .sort({ uploaded_at: 'desc' }).exec();
 
     const user = await User.findOne({ email: email });
     res.render('profile', { user, urlUser, posts: posts.slice(0, 30) });
-
   } catch (err) {
     next(err);
   }

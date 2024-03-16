@@ -65,7 +65,7 @@
             <div class="post" id="post" onclick="redirectToURL('/post/<%= notification.post.parent_post %>')">
                 <div class="post-flex">
                   <div class="post-left">
-                    <div class="post-icon-container">
+                    <div class="post-icon-container" onclick="redirectToURL('/profile/<%= notification.user.id %>')">
                       <img src="data:image/jpeg;base64, <%= notification.user.icon %>" alt="Icon" class="icon-img">
                     </div>
                   </div>
