@@ -45,7 +45,9 @@
         <div class="popup-menu">
           <% if(post.user.email === user.email){ %>
             <button class="fa-regular fa-trash-can menu-delete-button" data-postid="<%= post._id %>"> 削除</button>
-          <% }; %>
+          <% } else { %>
+            <button class="fa-regular fa-flag menu-report-button" data-postid="<%= post._id %>"> 通報</button>
+          <% } %>
         </div>
       </div>
       <div class="post-body">
@@ -108,77 +110,10 @@
         </div>
       </div>
     </div>
-
-    <% post.replies.forEach((p) => { %>
-      <div class="post" id="post" onclick="redirectToURL('/post/<%= p._id %>')">
-        <div class="post-flex">
-          <div class="post-left">
-            <div class="post-icon-container" onclick="redirectToURL('/profile/<%= p.user.id %>')">
-              <img src="data:image/jpeg;base64, <%= p.user.icon %>" alt="Icon" class="icon-img">
-            </div>
-          </div>
-          <div class="post-right">
-            <p class="post-detail">
-              <span><a href="/profile/<%= p.user.id %>" class="display-name"><%= p.user.display_name.length > 20 ? p.user.display_name.slice(0, 20) + '...' : p.user.display_name %></a></span>
-              <span class="timestamp">
-                <%= Math.floor((new Date() - p.uploaded_at) / (1000 * 60 * 60)) %>時間
-              </span>
-            </p>
-            <button class="fa-solid fa-ellipsis post-menu-button"></button>
-            <div class="popup-menu">
-              <% if(p.user.email === user.email){ %>
-                <button class="fa-regular fa-trash-can menu-delete-button" data-postid="<%= p._id %>"> 削除</button>
-              <% }; %>
-            </div>
-            <span class="post-content"><%= p.text %></span>
-            <div class="reaction-box">
-              <div class="flex">
-                <div class="reaction-child-box">
-                  <button class="fa-regular fa-comment post-comment"></button>
-                </div>
-                <div class="reaction-child-box">
-                  <% if(user.liked_posts.includes(p._id)){ %>
-                    <button class="fa-solid fa-heart post-like" data-postid="<%= p._id %>"></button>
-                  <% } else { %>
-                    <button class="fa-regular fa-heart post-like" data-postid="<%= p._id %>"></button>
-                  <% } %>
-                  <span>
-                    <% if(p.likes.length > 0){ %>
-                      <%= p.likes.length %>
-                    <% } %>
-                  </span>
-                </div>
-                <div class="reaction-child-box">
-                  <% if(user.bookmarked_posts.includes(p._id)){ %>
-                    <button class="fa-solid fa-bookmark post-bookmark" data-postid="<%= p._id %>"></button>
-                  <% } else { %>
-                    <button class="fa-regular fa-bookmark post-bookmark" data-postid="<%= p._id %>"></button>
-                  <% } %>
-                  <span>
-                    <% if(p.bookmarks.length > 0){ %>
-                      <%= p.bookmarks.length %>
-                    <% } %>
-                  </span>
-                </div>
-                <div class="reaction-child-box">
-                  <button class="fa-solid fa-arrow-up-from-bracket post-share"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% }); %>
+    <%- include("./includes/timeline") %>
   </div>
-  <button id="show-post-form">投稿</button>
-  <div class="background-post-form"></div>
-  <div class="post-form">
-    <button id="close-post-form">✖</button>
-    <form action="/post" method="POST">
-      <textarea placeholder="何かを投稿..." name="text"></textarea>
-      <button type="submit">投稿</button>
-    </form>
-  </div>
+  <%- include("./includes/post-form") %>
+  <%- include("./includes/report-form") %>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="/javascript/index.js"></script>
   <script src="/javascript/post.js"></script>

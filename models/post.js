@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ReportSchema = require('./report');
 
 const PostSchema = new mongoose.Schema({
     text  : String,
@@ -32,6 +33,7 @@ const PostSchema = new mongoose.Schema({
             default: []
         }
     ],
+    reports: [ ReportSchema ]
 },{collection: 'posts'});
 
 exports.Post = mongoose.model('Post', PostSchema);

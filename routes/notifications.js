@@ -29,7 +29,7 @@ router.get('/', loginCheck, async (req, res, next) => {
     notifications.sort((a, b) => {
       return new Date(b.received_at) - new Date(a.received_at);
     });
-    res.render('notifications', { user, notifications : notifications }); 
+    res.render('notifications', { user, notifications : notifications, file: 'notifications' }); 
   } catch (err) {
     next(err);
   }

@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const postLikeButtons = document.querySelectorAll('.post-like');
     const postBookmarkButtons = document.querySelectorAll('.post-bookmark');
     const postDeleteButtons = document.querySelectorAll('.menu-delete-button');
+    const postReportButtons = document.querySelectorAll('.menu-report-button');
+    const reportMenu = document.querySelector('.report-menu');
+    const reportForm = document.getElementById('report-form');
+    const reportRadioButtons = document.getElementsByName('reportReason');
+    const reportSubmitButton = document.getElementById('report-submit');
+    const closeReportMenuButton = document.getElementById('close-report-form');
     const postMenuButtons = document.querySelectorAll('.post-menu-button');
     const popupMenus = document.querySelectorAll('.popup-menu');
     const menuIconButton = document.querySelector('.menu-icon-container');
@@ -62,6 +68,34 @@ document.addEventListener('DOMContentLoaded', () => {
             deletePost(postId);
             event.stopPropagation();
         });
+    });
+
+    postReportButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const postId = button.getAttribute('data-postid');
+            reportForm.action = "/post/report/" + postId;
+            reportMenu.style.display = 'block';
+            backgroundPostForm.style.display = 'block';
+            popupMenus.forEach((menu) => {
+                menu.style.display = 'none';
+            });
+            reportRadioButtons.forEach((radio) => {
+                radio.checked = false;
+            });
+            reportSubmitButton.disabled = true;
+            event.stopPropagation();
+        });
+    });
+
+    reportRadioButtons.forEach((radio) => {
+        radio.addEventListener('change', () => {
+            reportSubmitButton.disabled = !radio.checked;
+        });
+    });
+
+    closeReportMenuButton.addEventListener('click', () => {
+        backgroundPostForm.style.display = 'none';
+        reportMenu.style.display = 'none';
     });
 
     document.addEventListener('click', (event) => {

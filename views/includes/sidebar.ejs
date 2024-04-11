@@ -1,0 +1,20 @@
+<ul class="menu">
+    <li title="home"><a href="/" class="<%= (file === 'index' || file === 'post') ? 'active' : '' %> access-home">ホーム</a></li>
+    <li title="search"><a href="/search" class="<%= (file === 'search') ? 'active' : '' %> access-search">検索</a></li>
+    <li title="notifications">
+        <a href="/notifications" class="<%= (file === 'notifications') ? 'active' : '' %> access-notification">通知</a>
+        <div class="notifications-count-badge">
+        <span class="notifications-count-number"></span>
+        </div>
+    </li>
+    <li title="profile"><a href="/profile/<%= user._id %>" class="<%= (file === 'profile') ? 'active' : '' %> access-profile">プロフィール</a></li>
+    <li title="bookmarks"><a href="/bookmarks" class="<%= (file === 'bookmarks') ? 'active' : '' %> access-bookmark">ブックマーク</a></li>
+    <li title="messages"><a href="#" class="access-message">メッセージ</a></li>
+    <div class="user-menu">
+        <button>設定</button>
+        <button id="user-logout-button">ログアウト</button>
+    </div>
+    <div class="menu-icon-container">
+        <img src="data:image/jpeg;base64, <%= user.icon %>" alt="Icon" class="icon-img">
+    </div>
+</ul>

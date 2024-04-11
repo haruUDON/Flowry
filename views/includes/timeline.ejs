@@ -1,0 +1,72 @@
+<% const targetArray = (file === 'post') ? post.replies : posts; %>
+<% targetArray.forEach((post) => { %>
+    <div class="post" id="post" onclick="redirectToURL('/post/<%= post._id %>')">
+    <div class="post-flex">
+        <div class="post-left">
+        <div class="post-icon-container" onclick="redirectToURL('/profile/<%= post.user.id %>')">
+            <img src="data:image/jpeg;base64, <%= post.user.icon %>" alt="Icon" class="icon-img">
+        </div>
+        </div>
+        <div class="post-right">
+        <p class="post-detail">
+            <span><a href="/profile/<%= post.user.id %>" class="display-name"><%= post.user.display_name.length > 20 ? post.user.display_name.slice(0, 20) + '...' : post.user.display_name %></a></span>
+            <span class="timestamp">
+            <%= Math.floor((new Date() - post.uploaded_at) / (1000 * 60 * 60)) %>時間
+            </span>
+        </p>
+        <button class="fa-solid fa-ellipsis post-menu-button"></button>
+        <div class="popup-menu">
+            <% if(post.user.email === user.email){ %>
+            <button class="fa-regular fa-trash-can menu-delete-button" data-postid="<%= post._id %>"> 削除</button>
+            <% } else { %>
+            <button class="fa-regular fa-flag menu-report-button" data-postid="<%= post._id %>"> 通報</button>
+            <% } %>
+        </div>
+        <span class="post-content">
+            <%- post.text %>
+        </span>
+        <div class="reaction-box">
+            <div class="flex">
+            <div class="reaction-child-box">
+                <button class="fa-regular fa-comment post-comment"></button>
+                <span>
+                <% if(post.replies.length > 0){ %>
+                    <%= post.replies.length %>
+                <% } %>
+                </span>
+            </div>
+            <div class="reaction-child-box">
+                <% if(user.liked_posts.includes(post._id)){ %>
+                <button class="fa-solid fa-heart post-like" data-postid="<%= post._id %>"></button>
+                <% } else { %>
+                <button class="fa-regular fa-heart post-like" data-postid="<%= post._id %>"></button>
+                <% } %>
+                <span>
+                <% if(post.likes.length > 0){ %>
+                    <%= post.likes.length %>
+                <% } %>
+                </span>
+            </div>
+            <div class="reaction-child-box">
+                <% if(file === 'bookmarks') { %>
+                <button class="fa-solid fa-bookmark post-bookmark" data-postid="<%= post._id %>"></button>
+                <% } else if(user.bookmarked_posts.includes(post._id)){ %>
+                <button class="fa-solid fa-bookmark post-bookmark" data-postid="<%= post._id %>"></button>
+                <% } else { %>
+                <button class="fa-regular fa-bookmark post-bookmark" data-postid="<%= post._id %>"></button>
+                <% } %>
+                <span>
+                <% if(post.bookmarks.length > 0){ %>
+                    <%= post.bookmarks.length %>
+                <% } %>
+                </span>
+            </div>
+            <div class="reaction-child-box">
+                <button class="fa-solid fa-arrow-up-from-bracket post-share"></button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+<% }); %>

@@ -34,7 +34,7 @@ router.get('/:userId', loginCheck, async (req, res, next) => {
       .sort({ uploaded_at: 'desc' }).exec();
 
     const user = await User.findOne({ email: email });
-    res.render('profile', { user, urlUser, posts: posts.slice(0, 30) });
+    res.render('profile', { user, urlUser, posts: posts.slice(0, 30), file: 'profile' });
   } catch (err) {
     next(err);
   }

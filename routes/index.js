@@ -20,7 +20,7 @@ const getRandomItemsFromArray = (arr, count) => {
 router.get('/', loginCheck, async (req, res, next) => {
     let selectedPosts = [];
     const oneDayAgo = new Date();
-    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    oneDayAgo.setDate(oneDayAgo.getDate() - 3);
     const query = {
         uploaded_at: { $gte: oneDayAgo },
         parent_post: null
@@ -33,7 +33,7 @@ router.get('/', loginCheck, async (req, res, next) => {
         })
         .exec();
         selectedPosts = getRandomItemsFromArray(posts, 30);
-        res.render('index', { user, posts: selectedPosts });
+        res.render('index', { user, posts: selectedPosts, file: 'index' });
     } catch (err) {
         return next(err);
     }

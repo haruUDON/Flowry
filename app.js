@@ -126,7 +126,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use((err, req, res, next) => {
-    res.status(err.status || 500);
     if (err.message === 'Post not found'){
         res.status(400).render('error', { message: "投稿が見つかりませんでした" });
         return;

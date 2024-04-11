@@ -25,7 +25,7 @@ router.get('/', loginCheck, async (req, res, next) => {
     })
     .exec();
     bookmarkedPosts = user.bookmarked_posts.slice(0, 30);
-    res.render('bookmarks', { user, posts : bookmarkedPosts }); 
+    res.render('bookmarks', { user, posts: bookmarkedPosts, file: 'bookmarks' }); 
   } catch (err){
     next(err);
   }

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const editProfileFormButton = document.getElementById('edit-profile-button');
   const followButton = document.getElementById('follow-button');
-  const backgroundProfileForm = document.querySelector('.background-profile-form');
+  const backgroundPostForm = document.querySelector('.background-post-form');
   const editProfileForm = document.querySelector('.edit-profile-form');
   const closeProfileForm = document.getElementById('close-profile-form');
   let inputProfileForm = document.getElementById("display-name-input");
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (editProfileFormButton) {
     editProfileFormButton.addEventListener('click', () => {
-      backgroundProfileForm.style.display = 'block';
+      backgroundPostForm.style.display = 'block';
       editProfileForm.style.display = 'block';
       const currentNameLength = displayNameInput.value.length;
       const currentBioLength = biographyTextarea.value.length;
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   closeProfileForm.addEventListener('click', () => {
-      backgroundProfileForm.style.display = 'none';
+      backgroundPostForm.style.display = 'none';
       editProfileForm.style.display = 'none';
       inputProfileForm.value = originalValueProfileForm;
       textareaProfileForm.value = originalBioProfileForm;
