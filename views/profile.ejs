@@ -17,10 +17,17 @@
                 </div>
                 <% if(urlUser.email === user.email){ %>
                     <button id="edit-profile-button">プロフィールを編集</button>
-                <% } else if(user.following.some(follow => follow.equals(urlUser._id))) { %>
-                    <button id="follow-button" class="cancel-follow-button" data-userid="<%= urlUser._id %>">フォロー中</button>
-                <% } else if (!user.following.some(follow => follow.equals(urlUser._id))) { %>
-                    <button id="follow-button" class="follow-button" data-userid="<%= urlUser._id %>">フォロー</button>
+                <% } else  { %>
+                    <button class="fa-solid fa-ellipsis profile-menu-button"></button>
+                    <div class="popup-menu-profile">
+                        <button class="fa-solid fa-ban menu-block-button" data-postid="<%= urlUser._id %>"> ブロック</button>
+                        <button class="fa-regular fa-flag menu-report-button" data-postid="<%= urlUser._id %>"> 通報</button>
+                    </div>
+                    <% if(user.following.some(follow => follow.equals(urlUser._id))){ %>
+                      <button id="follow-button" class="cancel-follow-button" data-userid="<%= urlUser._id %>">フォロー中</button>
+                    <% } else { %>
+                      <button id="follow-button" class="follow-button" data-userid="<%= urlUser._id %>">フォロー</button>
+                    <% } %>
                 <% } %>
             </div>
             <div class="profile-content">

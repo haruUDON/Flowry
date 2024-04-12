@@ -154,8 +154,9 @@ router.post('/delete', loginCheck, async (req, res, next) => {
     }
 });
 
-router.post('/report/:postId', loginCheck, async (req, res, next) => {
-    const postId = req.params.postId;
+router.post('/report', loginCheck, async (req, res, next) => {
+    const postId = req.body.postId;
+    const reportReason = req.body.reportReason;
     const email = req.session.user;
     try {
         const user = await User.findOne({ email: email });
@@ -165,7 +166,7 @@ router.post('/report/:postId', loginCheck, async (req, res, next) => {
         });
         if (user._id.toString() === post.user.toString()) return next(new Error('Permission denied'));
 
-        if (!req.body.reportReason) return next(new Error());
+        if (!reportReason) return next(new Error());
 
         post.reports.forEach(r => {
             if (r.user.toString() === user._id.toString()) post.reports.pull(r);
@@ -173,7 +174,7 @@ router.post('/report/:postId', loginCheck, async (req, res, next) => {
 
         const report = {
             received_at: new Date(),
-            type: req.body.reportReason,
+            type: reportReason,
             user: user._id,
         };
         post.reports.push(report);
@@ -191,7 +192,7 @@ router.post('/report/:postId', loginCheck, async (req, res, next) => {
 
         await post.save();
 
-        res.status(200).redirect('/post/' + post._id);
+        res.status(200).json({});
     } catch (err) {
         return next(err);
     }

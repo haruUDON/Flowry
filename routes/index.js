@@ -40,10 +40,14 @@ router.get('/', loginCheck, async (req, res, next) => {
 });
 
 router.post('/', loginCheck, async (req, res) => {
-    const socketId = req.body.socketId;
-    const user = await User.findOne({ email: req.session.user });
-    user.socket_id = socketId;
-    await user.save();
+    try {
+        const socketId = req.body.socketId;
+        const user = await User.findOne({ email: req.session.user });
+        user.socket_id = socketId;
+        await user.save();   
+    } catch (err) {
+        next(err);
+    }
 });
 
 module.exports = router;

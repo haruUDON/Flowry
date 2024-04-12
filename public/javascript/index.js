@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundPostForm = document.querySelector('.background-post-form');
     const postForm = document.querySelector('.post-form');
     const closePostFormButton = document.getElementById('close-post-form');
+    const postDives = document.querySelectorAll('.post');
     const postLikeButtons = document.querySelectorAll('.post-like');
     const postBookmarkButtons = document.querySelectorAll('.post-bookmark');
-    const postDeleteButtons = document.querySelectorAll('.menu-delete-button');
     const postReportButtons = document.querySelectorAll('.menu-report-button');
     const reportMenu = document.querySelector('.report-menu');
     const reportForm = document.getElementById('report-form');
@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuIconButton = document.querySelector('.menu-icon-container');
     const userMenu = document.querySelector('.user-menu');
     const userMenuLogoutButton = document.getElementById('user-logout-button');
+
+    const profileMenuButton = document.querySelector('.profile-menu-button');
+    const popupProfileMenu = document.querySelector('.popup-menu-profile');
 
     socket.on('connected', (data) => {
         fetch('/', {
@@ -62,23 +65,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //投稿の削除ボタン
-    postDeleteButtons.forEach((button) => {
-        button.addEventListener('click', (event) => {
-            const postId = button.getAttribute('data-postid');
-            deletePost(postId);
-            event.stopPropagation();
-        });
+    postDives.forEach((post) => {
+        const button = post.querySelector('.menu-delete-button');
+        if (button){
+            button.addEventListener('click', (event) => {
+                const postId = button.getAttribute('data-postid');
+                deletePost(postId, post);
+                event.stopPropagation();
+            });
+        }
     });
+
+    //通報メニュー
 
     postReportButtons.forEach((button) => {
         button.addEventListener('click', (event) => {
             const postId = button.getAttribute('data-postid');
-            reportForm.action = "/post/report/" + postId;
+            reportMenu.dataset.postid = postId;
             reportMenu.style.display = 'block';
             backgroundPostForm.style.display = 'block';
             popupMenus.forEach((menu) => {
                 menu.style.display = 'none';
             });
+            userMenu.style.display = 'none';
+            if (profileMenuButton) popupProfileMenu.style.display = 'none';
             reportRadioButtons.forEach((radio) => {
                 radio.checked = false;
             });
@@ -98,9 +108,37 @@ document.addEventListener('DOMContentLoaded', () => {
         reportMenu.style.display = 'none';
     });
 
+    reportForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        const formData = new FormData(reportForm);
+        const postId = reportMenu.getAttribute('data-postid');
+        const reportReason = formData.get('reportReason');
+
+        const data = { reportReason, postId };
+        fetch('/post/report', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.status === 200){
+                backgroundPostForm.style.display = 'none';
+                reportMenu.style.display = 'none';
+                showPopupResult('通報を受け付けました');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error); // エラー時の処理
+        });
+    });
+
     document.addEventListener('click', (event) => {
         if (!event.target.classList.contains('post-menu-button')) {
             userMenu.style.display = 'none';
+            if (profileMenuButton) popupProfileMenu.style.display = 'none';
             popupMenus.forEach((menu) => {
                 menu.style.display = 'none';
                 event.stopPropagation();
@@ -115,11 +153,24 @@ document.addEventListener('DOMContentLoaded', () => {
             popupMenus.forEach((menu) => {
                 menu.style.display = 'none';
             });
+
+            if (profileMenuButton) popupProfileMenu.style.display = 'none';
+
             // クリックされたメニューボタンに対応するポップアップメニューを表示
             popupMenus[index].style.display = 'block';
             event.stopPropagation();
         });
     });
+
+    if (profileMenuButton) {
+        profileMenuButton.addEventListener('click', (event) => {
+            popupProfileMenu.style.display = 'block';
+            popupMenus.forEach((menu) => {
+                menu.style.display = 'none';
+            });
+            event.stopPropagation();
+        });
+    }
 
     menuIconButton.addEventListener('click', (event) => {
         userMenu.style.display = 'block';
@@ -130,6 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
         redirectToURL('/logout');
         event.stopPropagation();
     });
+
+    function showPopupResult(message){
+        const popupResult = document.createElement('div');
+        popupResult.classList.add('popup-result');
+        const span = document.createElement('span');
+        span.textContent = message;
+        popupResult.appendChild(span);
+
+        document.body.appendChild(popupResult);
+
+        setTimeout(() => {
+            document.body.removeChild(popupResult);
+        }, 3000);
+    }
 
     function sendLike(postId, button) {
         const data = { postId: postId };
@@ -181,8 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function deletePost(postId) {
-        const data = { postId: postId };
+    function deletePost(postId, postDiv) {
+        const data = { postId };
         fetch('/post/delete', {
             method: 'POST',
             headers: {
@@ -192,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (response.status === 200){
-                window.location.reload();
+                const parentElement = postDiv.parentElement;
+                parentElement.removeChild(postDiv);
+                showPopupResult('投稿を削除しました');
             }
         })
         .catch(error => {
