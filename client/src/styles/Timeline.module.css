@@ -1,0 +1,793 @@
+@import url("//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css");
+
+/* ポスト作成のモーダルフォーム */
+
+.backgroundPostForm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+button#show-post-form {
+  font-weight: bold;
+  width: 150px;
+  height: 50px;
+  position: fixed;
+  padding: 10px 20px;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  bottom: 0;
+  left: 0;
+  margin: 0px 0px 15px 100px;
+}
+
+button#show-post-form:hover {
+  background-color: #ff4052;
+}
+
+.postForm {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%; 
+  width: 550px;  
+}
+
+.postForm form textarea {
+  font-family: arial;
+  font-size: 20px;
+  width: 90%;
+  height: 100px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 8px 15px;
+  resize: none;
+}
+
+.postForm form button {
+  font-weight: bold;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  margin: 0px 10px 10px 0px;
+  border-radius: 10px;
+  cursor: pointer;
+  float: right;
+}
+
+.postForm button:hover {
+  background-color: #ff4052;
+}
+
+button#close-post-form {
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: #333;
+}
+
+.replyFormDiv {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.replyForm textarea {
+  font-family: arial;
+  font-size: 20px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 8px 0px;
+  resize: none;
+  border: none;
+  outline: none;
+  overflow-y: hidden;
+  height: auto;
+}
+
+.replyForm button {
+  font-weight: bold;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 10px;
+  float: right;
+  cursor: pointer;
+}
+
+.replyForm button:disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
+
+.replyForm button:hover {
+  background-color: #ff4052;
+}
+
+/* プロフィール編集のモーダルフォーム */
+
+.backgroundProfileForm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.editProfileForm {
+  font-family: arial;
+  font-size: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%; 
+  width: 550px;  
+}
+
+button#close-profile-form {
+text-align: left;
+background-color: transparent;
+border: none;
+cursor: pointer;
+font-size: 15px;
+line-height: 1;
+color: #333;
+}
+
+.profileInputBox {
+  display: flex;
+  flex-direction: column;
+  line-height: 0;
+  height: auto;
+  border: 1px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: white;
+}
+
+.profileInputBox p {
+  font-size: 60%;
+}
+
+.profileInputBox input[type="text"] {
+  font-family: arial;
+  font-size: 15px;
+  border: none;
+  outline: none;
+}
+
+.profileInputBox textarea {
+  font-family: arial;
+  font-size: 15px;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+.profileFormIconContainer {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #eeeeee;
+}
+
+.flex {
+  display: flex;
+}
+
+.uploadIconImg {
+  font-weight: bold;
+  padding: 3px 8px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-left: 45px;
+  align-self: center;
+}
+
+.uploadIconImg:hover {
+  background-color: #ff4052;
+}
+
+.profileFormButtons {
+  display: flex;
+}
+
+.profileFormButtons button[type="submit"] {
+  font-size: 12px;
+  display: block;
+  font-weight: bold;
+  width: 60px;
+  padding: 3px 8px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  margin-left: auto;
+  margin-top: 3px;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+
+.profileFormButtons button[type="submit"]:hover {
+  background-color: #ff4052;
+}
+
+/* ポスト表示 */
+
+.post {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.soloPost {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.soloReaction {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+}
+
+.soloReaction button {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 15px;
+}
+
+.soloReaction span {
+  font-size: 15px;
+  color: #989898;
+  padding: 0 4px;
+}
+
+.soloReactionFlex {
+  display: flex;
+  justify-content: center;
+}
+
+.postFlex {
+  display: flex;
+}
+
+.postIconContainer {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 13px;
+}
+
+.iconImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 50%;
+}
+
+.iconImg:hover {
+  cursor: pointer;
+}
+
+.postLeft {
+  width: 63px;
+}
+
+.postRight {
+  width: 503px;
+}
+
+.postHead {
+  display: flex;
+}
+
+.postBody {
+  padding: 7px;
+}
+
+.postDetail {
+  line-height: 0;
+}
+
+.postContent {
+  color: black;
+  font-size: 20px;
+  line-height: 20px;
+  white-space: pre-line;
+}
+
+.postContent a,a:visited{
+  color: #439ff0;
+}
+
+.displayName {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.displayName:visited {
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.displayName:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.timestamp {
+  font-size: 80%;
+  color: gray;
+  margin-left: 5px;
+}
+
+.postMenuButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 85%;
+  color: #989898;
+  border: none;
+  background: none;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.postMenuButton:hover {
+  color: #3f3f3f;
+  cursor: pointer;
+}
+
+.backgroundPostMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 998;
+}
+
+.popupMenu {
+  position: absolute;
+  list-style: none;
+  top: 0;
+  right: 0;
+  width: 170px;
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  box-shadow: 2px 2px 5px #d9d9d9;
+  margin-top: 10px;
+  margin-right: 10px;
+  z-index: 999;
+}
+
+.popupMenu button {
+  text-align: left;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.popupMenu button:hover {
+  background-color: #f5f5f5;
+}
+
+.menuDeleteButton {
+  color: red;
+}
+
+.menuReportButton {
+  color: red;
+}
+
+.post.hover:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* 通報 */
+
+.reportMenu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%;
+  width: 550px;
+  height: 600px;
+}
+
+.radioButtonsList {
+  height: 500px;
+  overflow-y: auto;
+  padding: 0 60px;
+}
+
+.radioButtonsList label {
+  max-width: 500px;
+  display: flex;
+  padding: 12px 16px 16px;
+}
+
+.reportContent {
+  flex: 9;
+}
+
+.reportRadioButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reportRadioButton input {
+  width: 20px;
+  height: 20px;
+}
+
+.reportContent span {
+  font-size: 120%;
+}
+
+.reportSubmit {
+  width: 550px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reportSubmit button {
+  font-weight: bold;
+  width: 240px;
+  height: 50px;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+}
+
+.reportSubmit button:hover {
+  background-color: #1e1e1e;
+  cursor: pointer;
+}
+
+.reportSubmit button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button#close-report-form {
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: #333;
+}
+
+.reportListTitle {
+  margin: 0 10px;
+}
+
+.reportListTitle span {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* リザルト */
+
+.popupResult {
+  position: fixed;
+  display: flex;
+  background-color: #d1484d;
+  border-radius: 2px;
+  top: 96%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 35px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.popupResult span {
+  color: white;
+}
+
+/* エラーメッセージ */
+
+.error {
+  font-family: arial;
+  font-size: 20px;
+  margin: 25px;
+  text-align: center;
+}
+
+.error button {
+  font-size: 16px;
+  font-weight: bold;
+  width: 60px;
+  padding: 5px 10px;
+  background-color: #ff5c62;
+  color: white;
+  border: 1px solid #ff5c62;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+/* 通知 */
+
+.notificationHeartIcon {
+  font-size: 35px;
+  color: #fe4343;
+  margin-top: 5px;
+  margin-left: 15px;
+  margin-right: 10px;
+}
+
+.notificationFollowIcon {
+  font-size: 35px;
+  color: #00bfff;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+.notificationIconContainer {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.notificationTitle {
+  font-size: 17px;
+}
+
+.notificationText {
+  padding-top: 10px;
+}
+
+.notificationText span {
+  font-size: 17px;
+  color: #6b6b6b;
+}
+
+/* 検索 */
+
+.search {
+  position: relative;
+  flex-direction: column;
+  height: auto;
+  padding: 5px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+}
+
+.searchFlex {
+  display: flex;
+}
+
+.searchLeft span {
+  padding: 11px;
+  color: #b8b8b8;
+}
+
+.searchRight {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+}
+
+.searchRight input {
+  font-size: 15px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 11px;
+  resize: none;
+  border: none;
+  outline: none;
+}
+
+/* ログイン */
+
+.loginContainer {
+  font-family: arial;
+  font-size: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 5px;
+  border: 2px solid #eeeeee;
+  box-shadow: 2px 2px 5px #eeeeee;
+  border-radius: 5px;
+  display: none;
+  max-width: 90%;
+  width: 550px;
+}
+
+.loginTitle {
+  font-weight: bold;
+  text-align: center;
+  font-size: 28px;
+}
+
+.loginForm {
+  margin: 20px 50px;
+}
+
+.loginForm input {
+  font-size: 18px;
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 25px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #eeeeee;
+  outline: none;
+}
+
+.loginForm button {
+  font-weight: bold;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #ff5c62;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.loginForm button:hover {
+  background-color: #ff4052;
+}
+
+.switchContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.switchContainer label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switchInput {
+  display: none;
+}
+
+.switchInput:checked + .switchSlider {
+  background-color: #ff5c62;
+}
+
+.switchSlider {
+  position: relative;
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: #cccccc;
+  cursor: pointer;
+  transition: background-color 0.4s;
+}
+
+.switchSlider:before {
+  position: absolute;
+  content: "";
+  height: 21px;
+  width: 21px;
+  left: 2px;
+  bottom: 2px;
+  border-radius: 50%;
+  background-color: white;
+  transition: transform 0.4s;
+}
+
+.switchInput:checked + .switchSlider:before {
+  transform: translateX(25px);
+}
+
+.switchText {
+  font-size: 16px;
+  margin-left: 10px;
+  color: #333333;
+}
+
+.loading {
+  width: 596px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #333;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

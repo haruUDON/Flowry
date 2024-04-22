@@ -1,0 +1,21 @@
+.box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.share {
+  color: #989898;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.share:hover {
+  color: #3bdc00;
+  cursor: pointer;
+}
+
+.current .share {
+  font-size: 20px;
+}

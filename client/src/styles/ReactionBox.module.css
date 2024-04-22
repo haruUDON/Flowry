@@ -1,0 +1,47 @@
+.container {
+  margin-top: 15px;
+  display: flex;
+}
+
+.container.current {
+  position: relative;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+  display: flex;
+  justify-content: center;
+}
+
+.reactionChildBox {
+  flex: 1;
+}
+
+.postLike {
+  color: #989898;
+}
+
+.postLike:hover {
+  color: #fe4343;
+  cursor: pointer;
+}
+
+.postBookmark {
+  color: #989898;
+}
+
+.postBookmark:hover {
+  color: #ffd000;
+  cursor: pointer;
+}
+
+.postShare {
+  color: #989898;
+}
+
+.postShare:hover {
+  color: #3bdc00;
+  cursor: pointer;
+}

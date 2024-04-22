@@ -1,0 +1,18 @@
+.button {
+  font-weight: bold;
+  width: 125px;
+  height: 125px;
+  position: fixed;
+  background-color: #ff5c62;
+  color: white;
+  font-size: 15px;
+  border: none;
+  border-radius: 75px;
+  cursor: pointer;
+  bottom: 4%;
+  left: 90%;
+}
+
+.button:hover {
+  background-color: #ff4052;
+}

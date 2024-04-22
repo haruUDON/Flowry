@@ -1,0 +1,32 @@
+.box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.bookmark {
+  color: #989898;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.bookmark:hover {
+  color: #ffd000;
+  cursor: pointer;
+}
+
+.current .bookmark {
+  font-size: 20px;
+}
+
+.count {
+  font-size: 12px;
+  color: #989898;
+  padding-left: 7px;
+}
+
+.current .count {
+  font-size: 15px;
+  padding-left: 10px;
+}
