@@ -6,6 +6,7 @@ import styles from "../styles/Profile.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import EditProfileButton from './EditProfileButton';
 
 const Profile = () => {
   const { user } = useContext(UserContext);
@@ -77,7 +78,7 @@ const Profile = () => {
               <img src={`data:image/jpeg;base64, ${currentUser.icon}`} alt="Icon" className={styles.iconImg} />
             </div>
             {currentUser._id === user._id ? (
-              <button className={styles.editProfileButton}>プロフィールを編集</button>
+              <EditProfileButton />
             ) : (
               <>
                 <button className={styles.profileMenuButton}><FontAwesomeIcon icon={faEllipsis} /></button>

@@ -45,7 +45,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <UserContext.Provider value={{ isAuthenticated, user }}>
+        <UserContext.Provider value={{ isAuthenticated, user, setUser }}>
           <PopupProvider>
             {isAuthenticated &&
               <>

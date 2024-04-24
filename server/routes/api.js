@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/user.js').User;
 const Post = require('../models/post.js').Post;
 const Anime = require('../models/anime.js').Anime;
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 router.get('/auth/check', async (req, res, next) => {
     if (req.session.user) {
@@ -43,6 +48,34 @@ router.post('/profile', async (req, res, next) => {
     const id = req.body.userId;
     const user = await User.findOne({ _id: id });
     res.json({ user });
+});
+
+router.post('/profile/edit', upload.single('image'), async (req, res, next) => {
+  try {
+    const { name, bio } = req.body;
+
+    if (!name?.trim()) return res.status(400).json({ message: '名前を入力してください' });
+
+    const user = await User.findOne({ _id: req.session.user });
+
+    user.display_name = name;
+    user.bio = bio;
+
+    if (req.file && req.file.buffer){
+      const resizedImage = await sharp(req.file.buffer)
+      .resize({ width: 400, height: 400 })
+      .toBuffer();
+
+      const base64Image = resizedImage.toString('base64');
+      user.icon = base64Image;
+    }
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'プロフィールを変更しました', user });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
 });
 
 router.post('/post', async (req, res, next) => {
@@ -130,60 +163,45 @@ router.post('/posts/create', async (req, res, next) => {
   }
 });
 
+async function deleteReplies(replies) {
+  for (const replyId of replies) {
+    const reply = await Post.findById(replyId).exec();
+    if (!reply) continue;
+
+    await deleteReplies(reply.replies);
+
+    await Promise.all([
+      User.updateMany({ liked_posts: replyId }, { $pull: { liked_posts: replyId } }),
+      User.updateMany({ bookmarked_posts: replyId }, { $pull: { bookmarked_posts: replyId } }),
+      User.updateMany({ "notifications.post": replyId }, { $pull: { notifications: { post: replyId } }}),
+    ]);
+
+    await reply.deleteOne();
+  }
+}
+
 router.post('/posts/delete', async (req, res, next) => {
   try {
-    const data = req.body;
-
-    let text = data.text;
-
-    if (!text?.trim()) return res.status(400).json({ message: '投稿内容を入力してください' });
-
+    const postId = req.body.postId;
     const user = await User.findOne({ _id: req.session.user });
 
-    let parentPost = null;
-    if (data.parentId){
-      parentPost = await Post.findOne({ _id: data.parentId });
-      if (!parentPost) return res.status(400).json({ message: '返信先の投稿が存在しません' });
-    }
+    const post = await Post.findOne({ _id: postId });;
+    if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
 
-    let parentUser = null;
-    if (parentPost){
-      parentUser = await User.findOne({ _id: parentPost.user });
-      if (parentUser.deleted_at || !parentUser) return res.status(400).json({ message: '返信先のユーザーが存在しません' });
-    }
+    if (!user._id.equals(post.user)) return res.status(403).json({ message: 'この操作に必要な権限がありません' });
 
-    const now = new Date();
+    await Promise.all([
+      User.updateMany({ liked_posts: postId }, { $pull: { liked_posts: postId } }),
+      User.updateMany({ bookmarked_posts: postId }, { $pull: { bookmarked_posts: postId } }),
+      User.updateMany({ "notifications.post": postId }, { $pull: { notifications: { post: postId } }}),
+      Post.updateMany({ replies: postId }, { $pull: { replies: postId } })
+    ]);
 
-    const postParams = {
-      text: text,
-      uploaded_at: now,
-      user: user._id,
-    };
+    await deleteReplies(post.replies);
 
-    (parentPost ? postParams.parent_post = parentPost._id : postParams.parent_post = null);
+    await post.deleteOne();
 
-    const post = new Post(postParams);
-
-    if (parentPost) {
-      parentPost.replies.push(post._id);
-
-      if (!parentUser._id.equals(user._id)){
-        const notification = {
-          type: 'postReplied',
-          post: post._id,
-          user: user._id,
-        };
-    
-        parentUser.notifications.push(notification);
-        await parentUser.save();
-      }
-
-      await parentPost.save();
-    }
-
-    await post.save();
-
-    res.status(200).json({ success: true, message: '投稿に成功しました' });
+    res.status(200).json({ success: true, message: '投稿を削除しました' });
   } catch (err) {
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }

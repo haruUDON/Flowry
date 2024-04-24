@@ -1,20 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../App';
 import styles from "../styles/Timeline.module.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faFlag, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { getTimeDifferenceString } from './TimeUtil';
 import ReactionBox from './ReactionBox';
+import PopupPostMenu from './PopupPostMenu';
 
 const Timeline = (query) => {
-    const { user } = useContext(UserContext);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeMenuId, setActiveMenuId] = useState(null);
+    const [activeMenu, setActiveMenu] = useState(false);
     const navigate = useNavigate();
 
+    const toggleActiveMenu = (boolean) => {
+      setActiveMenu(boolean);
+    }
+
+    const hidePost = (post) => {
+      const updatedPosts = posts.filter(p => p._id !== post._id);
+      setPosts(updatedPosts);
+    }
+
     useEffect(() => {
+        setLoading(true);
+        setPosts([]);
         let isMounted = true;
 
         fetch('/api/timeline', {
@@ -44,16 +52,10 @@ const Timeline = (query) => {
         };
     }, [query]);
 
-    const toggleMenu = (id, e) => {
-      e.stopPropagation();
-      setActiveMenuId(id === activeMenuId ? null : id);
-    };
-
     return (
       <>
-        {activeMenuId && ( <div className='clearBackground' onClick={() => setActiveMenuId(null)}></div> )}
         {posts.map((post) => (
-          <div key={post._id} className={`${styles.post} ${activeMenuId !== post._id && ( styles.hover )}`} id="post" onClick={() => navigate(`/post/${post._id}`, { state: { post } })}>
+          <div key={post._id} className={`${styles.post} ${!activeMenu && ( styles.hover )}`} onClick={() => navigate(`/post/${post._id}`, { state: { post } })}>
             <div className={styles.postFlex}>
               <div className={styles.postLeft}>
                 <div className={styles.postIconContainer} onClick={(e) => {e.stopPropagation(); navigate(`/profile/${post.user._id}`, { state: { user: post.user } }); }}>
@@ -71,16 +73,7 @@ const Timeline = (query) => {
                     {getTimeDifferenceString(post.uploaded_at)}
                   </span>
                 </p>
-                <button className={`${styles.postMenuButton}`} onClick={(e) => toggleMenu(post._id, e)}><FontAwesomeIcon icon={faEllipsis} /></button>
-                {activeMenuId === post._id && (
-                  <div className={styles.popupMenu}>
-                  {post.user._id === user._id ? (
-                    <button className={styles.menuDeleteButton}><FontAwesomeIcon icon={faTrashCan} /> 削除</button>
-                  ) : (
-                    <button className={styles.menuReportButton} data-postid={post._id}><FontAwesomeIcon icon={faFlag} /> 通報</button>
-                  )}
-                </div>
-                )}
+                <PopupPostMenu post={post} toggleActiveMenu={toggleActiveMenu} hidePost={hidePost} />
                 <span className={styles.postContent}>{post.text}</span>
                 <ReactionBox post={post} />
               </div>

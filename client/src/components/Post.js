@@ -2,16 +2,14 @@ import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../App';
 import { useLocation, useParams } from 'react-router-dom';
 import styles from "../styles/Timeline.module.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faFlag, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Timeline from './Timeline';
 import ReactionBox from './ReactionBox';
+import PopupPostMenu from './PopupPostMenu';
 
 const Post = () => {
     const { user } = useContext(UserContext);
     const [currentPost, setCurrentPost] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeMenu, setActiveMenu] = useState(false);
     const { postId } = useParams();
     const location = useLocation();
 
@@ -51,11 +49,6 @@ const Post = () => {
         };
     }, [postId, location.state, currentPost]);
 
-    const toggleMenu = (e) => {
-        e.stopPropagation();
-        setActiveMenu(true);
-    };
-
     const query = {
         parent: postId
     }
@@ -69,7 +62,6 @@ const Post = () => {
                     </div>
                 ) : (
                     <>
-                        {activeMenu && ( <div className={styles.backgroundPostMenu} onClick={() => setActiveMenu(false)}></div> )}
                         <div className={styles.soloPost}>
                             <div className={styles.postHead}>
                                 <div className={styles.postIconContainer}>
@@ -85,16 +77,7 @@ const Post = () => {
                                         {Math.floor((new Date() - new Date(currentPost.uploaded_at)) / (1000 * 60 * 60))}時間
                                     </span>
                                 </p>
-                                <button className={styles.postMenuButton} onClick={(e) => toggleMenu(e)}><FontAwesomeIcon icon={faEllipsis} /></button>
-                                {activeMenu && (
-                                    <div className={styles.popupMenu}>
-                                        {currentPost.user === user._id ? (
-                                            <button className={styles.menuDeleteButton} data-postid={currentPost._id}><FontAwesomeIcon icon={faTrashCan} /> 削除</button>
-                                        ) : (
-                                            <button className={styles.menuReportButton} data-postid={currentPost._id}><FontAwesomeIcon icon={faFlag} /> 通報</button>
-                                        )}
-                                    </div>
-                                )}
+                                <PopupPostMenu post={currentPost} />
                             </div>
                             <div className={styles.postBody}>
                                 <span className={styles.postContent}>{currentPost.text}</span>
@@ -109,7 +92,7 @@ const Post = () => {
                                     </div>
                                 </div>
                                 <div className={styles.postRight}>
-                                    <form className={styles.replyForm} action={`/post/reply/${currentPost._id}`} method="POST">
+                                    <form className={styles.replyForm}>
                                         <textarea id="reply-textarea" placeholder="返信を投稿..." name="text" rows="1"></textarea>
                                         <button id="reply-button" type="submit" disabled>返信</button>
                                     </form>

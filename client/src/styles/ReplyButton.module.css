@@ -50,12 +50,6 @@
   z-index: 999;
 }
 
-.current {
-  display: flex;
-  height: auto;
-  margin: 5px;
-}
-
 .left {
   flex: 1;
 }

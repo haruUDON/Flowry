@@ -15,7 +15,7 @@ const ReplyButton = ({ post, current }) => {
 
   const name = post.user.display_name.length > 20 ? post.user.display_name.slice(0, 20) + '...' : post.user.display_name;
 
-  const handleClick = (e) => {
+  const togglePopup = (e) => {
       e.stopPropagation();
       setActivePopup(true);
   }
@@ -26,15 +26,14 @@ const ReplyButton = ({ post, current }) => {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
-  const handleSubmit = async (parent) => {
-
+  const handleSubmit = async () => {
     try {
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text, parentId: parent._id }),
+        body: JSON.stringify({ text, parentId: post._id }),
       });
   
       const data = await response.json();
@@ -59,7 +58,7 @@ const ReplyButton = ({ post, current }) => {
   return (
     <>
     <div className={`${styles.box} ${(current) ? styles.current : ''}`}>
-      <button className={styles.comment} onClick={handleClick}><FontAwesomeIcon icon={faComment} /></button>
+      <button className={styles.comment} onClick={togglePopup}><FontAwesomeIcon icon={faComment} /></button>
       <span className={styles.count}>{post.replies.length > 0 ? post.replies.length : null}</span>
     </div>
     {activePopup && (
@@ -100,7 +99,7 @@ const ReplyButton = ({ post, current }) => {
             </div>
           </div>
           <div className={styles.bottom}>
-            <button className={styles.submit} disabled={text?.trim() ? false : true} onClick={() => handleSubmit(post)}>返信</button>
+            <button className={styles.submit} disabled={text?.trim() ? false : true} onClick={() => handleSubmit()}>返信</button>
           </div>
         </div>
       </div>

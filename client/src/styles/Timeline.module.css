@@ -381,23 +381,6 @@ color: #333;
   margin-left: 5px;
 }
 
-.postMenuButton {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 85%;
-  color: #989898;
-  border: none;
-  background: none;
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
-.postMenuButton:hover {
-  color: #3f3f3f;
-  cursor: pointer;
-}
-
 .backgroundPostMenu {
   position: fixed;
   top: 0;
@@ -405,41 +388,6 @@ color: #333;
   width: 100%;
   height: 100%;
   z-index: 998;
-}
-
-.popupMenu {
-  position: absolute;
-  list-style: none;
-  top: 0;
-  right: 0;
-  width: 170px;
-  background-color: #ffffff;
-  border: 1px solid #d9d9d9;
-  box-shadow: 2px 2px 5px #d9d9d9;
-  margin-top: 10px;
-  margin-right: 10px;
-  z-index: 999;
-}
-
-.popupMenu button {
-  text-align: left;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.popupMenu button:hover {
-  background-color: #f5f5f5;
-}
-
-.menuDeleteButton {
-  color: red;
-}
-
-.menuReportButton {
-  color: red;
 }
 
 .post.hover:hover {
