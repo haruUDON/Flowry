@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { usePopup } from './PopupContext';
-import Popup from './Popup';
+import { useSnackbar } from './Snackbar';
 import styles from "../styles/Login.module.css";
 
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { showPopup, setShowPopup, setPopupMessage } = usePopup();
+  const { showSnackbar } = useSnackbar();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -68,8 +67,7 @@ const Login = () => {
       const { success } = data;
       if (success) window.location.reload();
     } catch (err) {
-      setPopupMessage(err.message);
-      setShowPopup(true);
+      showSnackbar(err.message);
       setPassword('');
     }
   };
@@ -113,7 +111,6 @@ const Login = () => {
         </div>
       </form>
     </div>
-    {showPopup && <Popup />}
   </>
   );
 };

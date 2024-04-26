@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { PopupProvider } from './components/PopupContext';
+import { SnackbarProvider } from './components/Snackbar';
 import Sidebar from './components/Sidebar';
 import Login from './components/Login';
 import Signup from './components/Signup';
@@ -46,7 +46,7 @@ function App() {
     <>
       <BrowserRouter>
         <UserContext.Provider value={{ isAuthenticated, user, setUser }}>
-          <PopupProvider>
+          <SnackbarProvider>
             {isAuthenticated &&
               <>
               <Sidebar />
@@ -100,7 +100,7 @@ function App() {
                   element={<Navigate to="/" replace />}
               />
             </Routes>
-          </PopupProvider>
+          </SnackbarProvider>
         </UserContext.Provider>
       </BrowserRouter>
     </>

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from "../styles/Login.module.css";
-import { usePopup } from './PopupContext';
-import Popup from './Popup';
+import { useSnackbar } from './Snackbar';
 
 const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { showPopup, setShowPopup, setPopupMessage } = usePopup();
+  const { showSnackbar } = useSnackbar();
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -72,8 +71,7 @@ const Signup = () => {
       const { success } = data;
       if (success) window.location.reload();
     } catch (err) {
-      setPopupMessage(err.message);
-      setShowPopup(true);
+      showSnackbar(err.message);
       setPassword('');
     }
   };
@@ -128,7 +126,6 @@ const Signup = () => {
           </div>
         </form>
       </div>
-      {showPopup && <Popup />}
     </>
    );
 };

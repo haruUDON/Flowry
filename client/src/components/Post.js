@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../App';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from "../styles/Timeline.module.css";
+import { getTimeDifferenceString } from './TimeUtil';
 import Timeline from './Timeline';
 import ReactionBox from './ReactionBox';
 import PopupPostMenu from './PopupPostMenu';
@@ -12,6 +13,7 @@ const Post = () => {
     const [loading, setLoading] = useState(true);
     const { postId } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (location.state && location.state.post) {
@@ -47,7 +49,7 @@ const Post = () => {
         return () => {
           isMounted = false;
         };
-    }, [postId, location.state, currentPost]);
+    }, [postId, location.state]);
 
     const query = {
         parent: postId
@@ -64,17 +66,15 @@ const Post = () => {
                     <>
                         <div className={styles.soloPost}>
                             <div className={styles.postHead}>
-                                <div className={styles.postIconContainer}>
+                                <div className={styles.postIconContainer} onClick={() => navigate(`/profile/${currentPost.user._id}`, { state: { user: currentPost.user } }) }>
                                     <img src={`data:image/jpeg;base64, ${currentPost.user.icon}`} alt="Icon" className={styles.iconImg} />
                                 </div>
                                 <p className={styles.postDetail}>
-                                    <span>
-                                        <a href={`/profile/${currentPost.user._id}`} className={styles.displayName}>
-                                            {currentPost.user.display_name.length > 20 ? currentPost.user.display_name.slice(0, 20) + '...' : currentPost.user.display_name}
-                                        </a>
+                                    <span className={styles.displayName} onClick={() => navigate(`/profile/${currentPost.user._id}`, { state: { user: currentPost.user } }) }>
+                                      {currentPost.user.display_name.length > 20 ? currentPost.user.display_name.slice(0, 20) + '...' : currentPost.user.display_name}
                                     </span>
                                     <span className={styles.timestamp}>
-                                        {Math.floor((new Date() - new Date(currentPost.uploaded_at)) / (1000 * 60 * 60))}時間
+                                      {getTimeDifferenceString(currentPost.uploaded_at)}
                                     </span>
                                 </p>
                                 <PopupPostMenu post={currentPost} />
@@ -87,7 +87,7 @@ const Post = () => {
                         <div className={styles.replyFormDiv}>
                             <div className={styles.postFlex}>
                                 <div className={styles.postLeft}>
-                                    <div className={styles.postIconContainer}>
+                                    <div className={styles.postIconContainer} onClick={() => navigate(`/profile/${user._id}`, { state: { user } })}>
                                         <img src={`data:image/jpeg;base64, ${user.icon}`} alt="Icon" className={styles.iconImg} />
                                     </div>
                                 </div>

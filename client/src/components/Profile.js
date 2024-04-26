@@ -109,11 +109,7 @@ const Profile = () => {
               </p>
             ))}
             <p className={styles.profileUserId}>@{currentUser._id}</p>
-            {currentUser.bio && currentUser.bio.match(/.{1,32}/g).map((bio, index) => (
-              <p key={index} className={styles.profileBio}>
-                {bio}
-              </p>
-            ))}
+            {currentUser.bio && <p className={styles.profileBio}>{currentUser.bio}</p>}
             <p className={styles.followContent}>
               <span>{currentUser.following.length} フォロー中</span>
               <span>{currentUser.followers.length} フォロワー</span>

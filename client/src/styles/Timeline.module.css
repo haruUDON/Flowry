@@ -313,6 +313,7 @@ color: #333;
   border-radius: 50%;
   overflow: hidden;
   margin-right: 13px;
+  position: relative;
 }
 
 .iconImg {
@@ -321,10 +322,12 @@ color: #333;
   object-fit: cover;
   object-position: center center;
   border-radius: 50%;
+  transition: filter 0.3s ease;
+  cursor: pointer;
 }
 
-.iconImg:hover {
-  cursor: pointer;
+.postIconContainer:hover .iconImg {
+  filter: brightness(85%);
 }
 
 .postLeft {

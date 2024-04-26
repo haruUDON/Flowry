@@ -1,14 +1,22 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styles from "../styles/ShareButton.module.css";
-import { UserContext } from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { useSnackbar } from './Snackbar';
 
 const ShareButton = ({ post, current }) => {
-  const { user } = useContext(UserContext);
+  const { showSnackbar } = useSnackbar();
 
-  const handleClick = (e) => {
-      e.stopPropagation();
+  const handleClick = async (e) => {
+    e.stopPropagation();
+    const siteUrl = window.location.origin;
+    const postLink = `${siteUrl}/post/${post._id}`;
+    try {
+      await navigator.clipboard.writeText(postLink);
+      showSnackbar('クリップボードにコピーしました');
+    } catch (err) {
+      showSnackbar('コピー中にエラーが発生しました');
+    }
   }
 
   return (

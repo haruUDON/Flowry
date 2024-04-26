@@ -2,8 +2,7 @@ import React, { useContext, useState } from 'react'
 import styles from "../styles/ReplyButton.module.css";
 import { getTimeDifferenceString } from './TimeUtil';
 import { UserContext } from '../App';
-import { usePopup } from './PopupContext';
-import Popup from './Popup';
+import { useSnackbar } from './Snackbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 
@@ -11,7 +10,7 @@ const ReplyButton = ({ post, current }) => {
   const { user } = useContext(UserContext);
   const [activePopup, setActivePopup] = useState(false);
   const [text, setText] = useState('');
-  const { showPopup, setShowPopup, setPopupMessage } = usePopup();
+  const { showSnackbar } = useSnackbar();
 
   const name = post.user.display_name.length > 20 ? post.user.display_name.slice(0, 20) + '...' : post.user.display_name;
 
@@ -45,12 +44,10 @@ const ReplyButton = ({ post, current }) => {
       const { success } = data;
       if (success) {
         setActivePopup(false);
-        setPopupMessage(data.message);
-        setShowPopup(true);
+        showSnackbar(data.message);
       }
     } catch (err) {
-      setPopupMessage(err.message);
-      setShowPopup(true);
+      showSnackbar(err.message);
       setText('');
     }
   }
@@ -104,7 +101,6 @@ const ReplyButton = ({ post, current }) => {
         </div>
       </div>
     )}
-    {showPopup && <Popup />}
     </>
   )
 }

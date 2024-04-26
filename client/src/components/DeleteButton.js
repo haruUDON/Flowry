@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import styles from "../styles/DeleteButton.module.css";
-import { usePopup } from './PopupContext';
-import Popup from './Popup';
+import { useSnackbar } from './Snackbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 const DeleteButton = ({ post, hidePost }) => {
   const [activePopup, setActivePopup] = useState(false);
-  const { showPopup, setShowPopup, setPopupMessage } = usePopup();
+  const { showSnackbar } = useSnackbar();
 
   const togglePopup = (e) => {
     e.stopPropagation();
@@ -33,14 +32,12 @@ const DeleteButton = ({ post, hidePost }) => {
       const { success } = data;
       if (success) {
         setActivePopup(false);
-        setPopupMessage(data.message);
-        setShowPopup(true);
+        showSnackbar(data.message);
         hidePost(post);
       }
     } catch (err) {
       setActivePopup(false);
-      setPopupMessage(err.message);
-      setShowPopup(true);
+      showSnackbar(err.message);
     }
   }
 
@@ -66,7 +63,6 @@ const DeleteButton = ({ post, hidePost }) => {
         </div>
       </div>
     )}
-    {showPopup && <Popup />}
     </>
   )
 }

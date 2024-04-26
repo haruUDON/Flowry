@@ -4,8 +4,7 @@ import { UserContext } from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCameraRotate, faMagnifyingGlassPlus, faMagnifyingGlassMinus, faArrowLeft, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Cropper from 'react-easy-crop'
-import { usePopup } from './PopupContext';
-import Popup from './Popup';
+import { useSnackbar } from './Snackbar';
 
 const NAME_LIMIT = 50;
 const BIO_LIMIT = 160;
@@ -26,7 +25,7 @@ const EditProfileButton = () => {
   const [name, setName] = useState(user.display_name);
   const [bio, setBio] = useState(user.bio);
   
-  const { showPopup, setShowPopup, setPopupMessage } = usePopup();
+  const { showSnackbar } = useSnackbar();
 
   const togglePopup = (e) => {
     e.stopPropagation();
@@ -110,9 +109,7 @@ const EditProfileButton = () => {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('bio', bio);
-      formData.append('image', dataURLtoFile(croppedImage, 'croppedImage.jpg'));
-
-      console.log('FormData:', formData);
+      if (croppedImage) formData.append('image', dataURLtoFile(croppedImage, 'croppedImage.jpg'));
 
       const response = await fetch('/api/profile/edit', {
         method: 'POST',
@@ -129,13 +126,11 @@ const EditProfileButton = () => {
       if (success) {
         setUser(data.user);
         setActivePopup(false);
-        setPopupMessage(data.message);
-        setShowPopup(true);
+        showSnackbar(data.message);
       }
     } catch (err) {
       setActivePopup(false);
-      setPopupMessage(err.message);
-      setShowPopup(true);
+      showSnackbar(err.message);
     }
   }
 
@@ -152,7 +147,7 @@ const EditProfileButton = () => {
         </div>
         <div className={styles.box}>
           <div className={styles.icon}>
-            <img Src={(croppedImage ? croppedImage : `data:image/jpeg;base64, ${user.icon}`)} alt="Icon" class={styles.iconImg} />
+            <img src={(croppedImage ? croppedImage : `data:image/jpeg;base64, ${user.icon}`)} alt="Icon" className={styles.iconImg} />
             <label className={styles.uploader}>
               <input type="file" hidden accept="image/*" onChange={onFileChange} />
               <FontAwesomeIcon icon={faCameraRotate} className={styles.camera} />
@@ -229,7 +224,6 @@ const EditProfileButton = () => {
       </div>
       </>
     )}
-    {showPopup && <Popup />}
     </>
   )
 }
