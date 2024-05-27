@@ -11,6 +11,7 @@ import './App.css';
 import Profile from './components/Profile';
 import Post from './components/Post';
 import NekkyoMode from './components/NekkyoMode';
+import CreatePostButton from './components/CreatePostButton';
 
 export const UserContext = createContext();
 
@@ -50,6 +51,7 @@ function App() {
             {isAuthenticated &&
               <>
               <Sidebar />
+              <CreatePostButton />
               <NekkyoMode />
               </>
             }

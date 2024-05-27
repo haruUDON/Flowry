@@ -340,6 +340,7 @@ color: #333;
 
 .postHead {
   display: flex;
+  padding-bottom: 5px;
 }
 
 .postBody {

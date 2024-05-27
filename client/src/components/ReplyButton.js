@@ -82,7 +82,7 @@ const ReplyButton = ({ post, current }) => {
           </div>
           <div className={styles.line}></div>
           <div className={styles.form}>
-          <div className={styles.left}>
+            <div className={styles.left}>
               <div className={styles.icon}>
                 <img src={`data:image/jpeg;base64, ${user.icon}`} alt="Icon" className={styles.iconImg} />
               </div>
