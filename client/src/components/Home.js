@@ -4,7 +4,7 @@ import Timeline from './Timeline';
 const Home = () => {
 
   const from = new Date();
-  from.setDate(from.getDate() - 20);
+  from.setDate(from.getDate() - 30);
 
   const query = {
     fromDate: from,

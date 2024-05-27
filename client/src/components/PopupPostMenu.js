@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react'
 import styles from "../styles/PopupPostMenu.module.css";
 import { UserContext } from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import DeleteButton from './DeleteButton';
+import ReportButton from './ReportButton';
 
 const PopupPostMenu = ({ post, toggleActiveMenu, hidePost }) => {
   const { user } = useContext(UserContext);
@@ -30,7 +31,7 @@ const PopupPostMenu = ({ post, toggleActiveMenu, hidePost }) => {
         {post.user._id === user._id ? (
           <DeleteButton post={post} hidePost={hidePost} />
         ) : (
-          <button className={styles.report} data-postid={post._id}><FontAwesomeIcon icon={faFlag} /> 通報</button>
+          <ReportButton post={post} hidePost={hidePost} />
         )}
         </div>
       </div>

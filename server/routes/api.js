@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('../models/user.js').User;
@@ -8,6 +9,15 @@ const Anime = require('../models/anime.js').Anime;
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+const transporter = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+});
 
 router.get('/auth/check', async (req, res, next) => {
     if (req.session.user) {
@@ -202,6 +212,50 @@ router.post('/posts/delete', async (req, res, next) => {
     await post.deleteOne();
 
     res.status(200).json({ success: true, message: '投稿を削除しました' });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
+});
+
+router.post('/posts/report', async (req, res, next) => {
+  try {
+    const { postId, reason } = req.body;
+    const user = await User.findOne({ _id: req.session.user });
+
+    const post = await Post.findOne({ _id: postId });;
+    if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
+
+    if (user._id.equals(post.user)) return res.status(403).json({ message: 'この操作に必要な権限がありません' });
+
+    if (!reason) return res.status(400).json({ message: '報告する理由を選択してください' });
+
+    post.reports.forEach(r => {
+      if (user._id.equals(r.user)) post.reports.pull(r);
+    });
+
+    const report = {
+      received_at: new Date(),
+      type: reason,
+      user: user._id,
+    };
+
+    post.reports.push(report);
+
+    if (post.reports.length >= 5){
+      const url = `${process.env.URL_ORIGIN}post/${post._id}`;
+      const mailData = {
+          from: "flowry.info@gmail.com",
+          to: process.env.ADMIN_MAIL,
+          subject: `複数の報告が寄せられている投稿があります`,
+          text: `管理者様。\n\n下記の投稿に複数の報告が寄せられています。\n投稿内容の確認後、対処をご検討ください。\n\n${url}\n\n※本メールは自動送信メールとなりす。\n 本メールにご返信いただきましてもスタッフは確認ができません。\n\n※このメールに心当たりがない場合はメールを破棄してください。`
+      };
+
+      await transporter.sendMail(mailData);
+    }
+
+    await post.save();
+
+    res.status(200).json({ success: true, message: '投稿の報告を受け付けました' });
   } catch (err) {
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
