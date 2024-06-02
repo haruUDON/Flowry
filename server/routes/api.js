@@ -3,6 +3,9 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const User = require('../models/user.js').User;
 const Post = require('../models/post.js').Post;
 const Anime = require('../models/anime.js').Anime;
@@ -114,13 +117,32 @@ router.post('/anime', async (req, res, next) => {
   res.json({ anime });
 });
 
-router.post('/posts/create', async (req, res, next) => {
+const calculateFolderSize = (folderPath) => {
+  const files = fs.readdirSync(folderPath);
+  let totalSize = 0;
+  files.forEach(file => {
+    const filePath = path.join(folderPath, file);
+    const fileStats = fs.statSync(filePath);
+    totalSize += fileStats.size;
+  });
+  return totalSize;
+};
+
+const MAX_STORAGE_SIZE = 50 * 1024 * 1024; //50MB
+
+const generateHashedFileName = (file) => {
+  const hash = crypto.createHash('sha256');
+  hash.update(file.originalname + Date.now());
+  return hash.digest('hex');
+};
+
+router.post('/posts/create', upload.single('image'), async (req, res, next) => {
   try {
     const data = req.body;
 
     let text = data.text;
 
-    if (!text?.trim()) return res.status(400).json({ message: '投稿内容を入力してください' });
+    if (!text?.trim() && !req.file) return res.status(400).json({ message: '投稿内容を入力してください' });
 
     const user = await User.findOne({ _id: req.session.user });
 
@@ -145,6 +167,32 @@ router.post('/posts/create', async (req, res, next) => {
     };
 
     (parentPost ? postParams.parent_post = parentPost._id : postParams.parent_post = null);
+
+    if (req.file){
+
+      const userId = req.session.user;
+      const userFolder = path.join(__dirname, '../uploads', userId);
+
+      if (!fs.existsSync(userFolder)) {
+        fs.mkdirSync(userFolder, { recursive: true });
+      }
+
+      const currentFolderSize = calculateFolderSize(userFolder);
+
+      const newFileSize = req.file.size;
+      const newFolderSize = currentFolderSize + newFileSize;
+
+      if (newFolderSize > MAX_STORAGE_SIZE) {
+        return res.status(400).json({ message: '個人ストレージの上限に達しています' });
+      }
+
+      const hashedFileName = generateHashedFileName(req.file);
+      const filePath = path.join(userFolder, `${hashedFileName}.${req.file.mimetype.split('/')[1]}`);
+
+      fs.writeFileSync(filePath, req.file.buffer);
+
+      postParams.image = `${hashedFileName}.${req.file.mimetype.split('/')[1]}`;
+    }
 
     const post = new Post(postParams);
 
@@ -186,6 +234,11 @@ async function deleteReplies(replies) {
       User.updateMany({ "notifications.post": replyId }, { $pull: { notifications: { post: replyId } }}),
     ]);
 
+    if (reply.image){
+      const filePath = path.join(__dirname, '../uploads', reply.user.toString(), reply.image);
+      await fs.unlinkSync(filePath);
+    }
+
     await reply.deleteOne();
   }
 }
@@ -204,8 +257,13 @@ router.post('/posts/delete', async (req, res, next) => {
       User.updateMany({ liked_posts: postId }, { $pull: { liked_posts: postId } }),
       User.updateMany({ bookmarked_posts: postId }, { $pull: { bookmarked_posts: postId } }),
       User.updateMany({ "notifications.post": postId }, { $pull: { notifications: { post: postId } }}),
-      Post.updateMany({ replies: postId }, { $pull: { replies: postId } })
+      Post.updateMany({ replies: postId }, { $pull: { replies: postId } }),
     ]);
+
+    if (post.image){
+      const filePath = path.join(__dirname, '../uploads', post.user.toString(), post.image);
+      fs.unlinkSync(filePath);
+    }
 
     await deleteReplies(post.replies);
 
@@ -213,6 +271,7 @@ router.post('/posts/delete', async (req, res, next) => {
 
     res.status(200).json({ success: true, message: '投稿を削除しました' });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
 });

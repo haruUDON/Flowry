@@ -75,6 +75,11 @@ const Timeline = (query) => {
                 </p>
                 <PopupPostMenu post={post} toggleActiveMenu={toggleActiveMenu} hidePost={hidePost} />
                 <span className={styles.postContent}>{post.text}</span>
+                {post.image &&
+                <div className={styles.previewContainer}>
+                  <img src={`/uploads/${post.user._id}/${post.image}`} alt="Preview" className={styles.preview} />
+                </div>
+                }
                 <ReactionBox post={post} />
               </div>
             </div>

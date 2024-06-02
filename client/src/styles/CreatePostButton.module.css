@@ -64,7 +64,7 @@
   height: auto;
 }
 
-.form textarea {
+.textareaDefault {
   font-family: arial;
   font-size: 20px;
   width: 100%;
@@ -79,15 +79,44 @@
   box-sizing: border-box;
 }
 
+.textareaWithImage {
+  font-family: arial;
+  font-size: 20px;
+  width: 100%;
+  margin-top: 8px;
+  resize: none;
+  border: none;
+  outline: none;
+  overflow-y: auto;
+  height: auto;
+  min-height: 50px;
+  max-height: calc(30vh);
+  box-sizing: border-box;
+}
+
+.line {
+  flex: 10;
+  border: 1px solid #ccc;
+  margin: 10px;
+}
+
 .bottom {
   height: 42px;
-  justify-content: right;
   align-items: center;
   display: flex;
   margin: 0px 10px;
 }
 
+.tablist {
+  flex: 8;
+}
+
 .submit {
+  flex: 2;
+  justify-content: right;
+}
+
+.submit button {
   font-weight: bold;
   background-color: #ff5c62;
   color: white;
@@ -97,17 +126,54 @@
   float: right;
 }
 
-.submit:disabled {
+.submit button:disabled {
   opacity: 0.5;
   cursor: auto;
 }
 
-.submit:disabled:hover {
+.submit button:disabled:hover {
   background-color: #ff5c62;
   cursor: auto;
 }
 
-.submit:hover {
+.submit button:hover {
   cursor: pointer;
   background-color: #ff4052;
+}
+
+.previewContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.preview {
+  max-width: 443px;
+  max-height: 443px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.deletePreview {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 18px;
+  color: rgb(247, 247, 247);
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.deletePreview:hover {
+  background-color: rgba(121, 121, 121, 0.5);
+  cursor: pointer;
 }

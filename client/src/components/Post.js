@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { UserContext } from '../App';
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from "../styles/Timeline.module.css";
 import { getTimeDifferenceString } from './TimeUtil';
 import Timeline from './Timeline';
 import ReactionBox from './ReactionBox';
 import PopupPostMenu from './PopupPostMenu';
+import ReplyForm from './ReplyForm';
 
 const Post = () => {
-    const { user } = useContext(UserContext);
     const [currentPost, setCurrentPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const { postId } = useParams();
@@ -81,24 +80,15 @@ const Post = () => {
                             </div>
                             <div className={styles.postBody}>
                                 <span className={styles.postContent}>{currentPost.text}</span>
+                                {currentPost.image &&
+                                  <div className={styles.previewContainer}>
+                                    <img src={`/uploads/${currentPost.user._id}/${currentPost.image}`} alt="Preview" className={styles.preview} />
+                                  </div>
+                                }
                             </div>
                         </div>
                         <ReactionBox post={currentPost} current={true} />
-                        <div className={styles.replyFormDiv}>
-                            <div className={styles.postFlex}>
-                                <div className={styles.postLeft}>
-                                    <div className={styles.postIconContainer} onClick={() => navigate(`/profile/${user._id}`, { state: { user } })}>
-                                        <img src={`data:image/jpeg;base64, ${user.icon}`} alt="Icon" className={styles.iconImg} />
-                                    </div>
-                                </div>
-                                <div className={styles.postRight}>
-                                    <form className={styles.replyForm}>
-                                        <textarea id="reply-textarea" placeholder="返信を投稿..." name="text" rows="1"></textarea>
-                                        <button id="reply-button" type="submit" disabled>返信</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <ReplyForm post={currentPost} />
                     </>
                 )}
                 <Timeline query={query} />

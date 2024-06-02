@@ -2,12 +2,23 @@ import React, { useContext, useState } from 'react'
 import styles from "../styles/CreatePostButton.module.css";
 import { UserContext } from '../App';
 import { useSnackbar } from './Snackbar';
+import UploadImageButton from './UploadImageButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 function CreatePostButton() {
   const { user } = useContext(UserContext);
   const [activePopup, setActivePopup] = useState(false);
   const [text, setText] = useState('');
+  const [img, setImg] = useState(null);
   const { showSnackbar } = useSnackbar();
+
+  const togglePopup = (e) => {
+    e.stopPropagation();
+    setActivePopup(true);
+    setText('');
+    setImg(null);
+  }
 
   const handleTextChange = (e) => {
     setText(e.target.value);
@@ -17,12 +28,13 @@ function CreatePostButton() {
 
   const handleSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append('text', text);
+      formData.append('image', img);
+
       const response = await fetch('/api/posts/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
+        body: formData,
       });
   
       const data = await response.json();
@@ -38,13 +50,12 @@ function CreatePostButton() {
       }
     } catch (err) {
       showSnackbar(err.message);
-      setText('');
     }
   }
 
   return (
     <>
-    <button className={styles.button} onClick={() => setActivePopup(true)}>投稿</button>
+    <button className={styles.button} onClick={togglePopup}>投稿</button>
     {activePopup &&
       <>
         <div className='blackBackground' onClick={() => setActivePopup(false)}></div>
@@ -57,14 +68,27 @@ function CreatePostButton() {
             </div>
             <div className={styles.right}>
               <textarea
+                className={img ? styles.textareaWithImage : styles.textareaDefault}
                 placeholder="何かを投稿..."
                 value={text}
                 onChange={handleTextChange}
               />
+              {img &&
+                <div className={styles.previewContainer}>
+                  <button className={styles.deletePreview} onClick={() => setImg(null)}><FontAwesomeIcon icon={faXmark} /></button>
+                  <img src={URL.createObjectURL(img)} alt="Preview" className={styles.preview} />
+                </div>
+              }
             </div>
           </div>
+          <div className={styles.line}></div>
           <div className={styles.bottom}>
-            <button className={styles.submit} disabled={text?.trim() ? false : true} onClick={() => handleSubmit()}>投稿</button>
+            <div className={styles.tablist}>
+              <UploadImageButton setImg={setImg} />
+            </div>
+            <div className={styles.submit}>
+              <button disabled={text?.trim() || img ? false : true} onClick={() => handleSubmit()}>投稿</button>
+            </div>
           </div>
         </div>
       </>

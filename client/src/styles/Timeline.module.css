@@ -336,6 +336,7 @@ color: #333;
 
 .postRight {
   width: 503px;
+  margin-right: 10px;
 }
 
 .postHead {
@@ -742,4 +743,19 @@ button#close-report-form {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.previewContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.preview {
+  max-width: 100%;
+  max-height: 310px;
+  object-fit: contain;
+  border-radius: 10px;
 }

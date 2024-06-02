@@ -3,6 +3,7 @@ const ReportSchema = require('./report');
 
 const PostSchema = new mongoose.Schema({
     text  : String,
+    image  : String,
     uploaded_at  : Date,
     parent_post  : {
         type: mongoose.Schema.Types.ObjectId,

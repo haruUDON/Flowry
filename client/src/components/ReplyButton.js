@@ -48,7 +48,6 @@ const ReplyButton = ({ post, current }) => {
       }
     } catch (err) {
       showSnackbar(err.message);
-      setText('');
     }
   }
 

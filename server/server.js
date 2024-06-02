@@ -62,6 +62,8 @@ app.use('/api', api);
 app.use('/login', login);
 app.use('/logout', logout);
 
+app.use('/uploads', express.static('uploads'));
+
 // const Anime = require('./models/anime.js').Anime;
 
 // const API_ENDPOINT = 'https://api.annict.com/v1/works';
