@@ -9,9 +9,11 @@ import PrivateRoute from './components/PrivateRoute';
 import UnAuthRoute from './components/UnAuthRoute';
 import './App.css';
 import Profile from './components/Profile';
-import Post from './components/Post';
+import CurrentPost from './components/CurrentPost';
 import NekkyoMode from './components/NekkyoMode';
 import CreatePostButton from './components/CreatePostButton';
+import Search from './components/Search';
+import Notifications from './components/Notifications';
 
 export const UserContext = createContext();
 
@@ -90,10 +92,26 @@ function App() {
                 }
               />
               <Route
+                path="/search"
+                element={
+                  <PrivateRoute>
+                    <Search />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <PrivateRoute>
+                    <Notifications />
+                  </PrivateRoute>
+                }
+              />
+              <Route
                 path="/post/:postId"
                 element={
                   <PrivateRoute>
-                    <Post />
+                    <CurrentPost />
                   </PrivateRoute>
                 }
               />

@@ -40,7 +40,6 @@ function AnimeList() {
           }
       ).catch(
           error => {
-              console.error('Error fetching data:', error)
               if (isMounted) setLoading(false);
           }
       );

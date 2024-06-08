@@ -748,14 +748,13 @@ button#close-report-form {
 .previewContainer {
   position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-top: 10px;
 }
 
 .preview {
   max-width: 100%;
-  max-height: 310px;
+  max-height: 493px;
   object-fit: contain;
   border-radius: 10px;
 }

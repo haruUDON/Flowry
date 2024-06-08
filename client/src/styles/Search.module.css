@@ -1,0 +1,35 @@
+.search {
+  position: relative;
+  display: flex;
+  height: auto;
+  padding: 5px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+  border: 2px solid #eeeeee;
+  border-radius: 25px;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #b8b8b8;
+}
+
+.right {
+  flex: 9;
+}
+
+.right input {
+  font-size: 15px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 11px;
+  resize: none;
+  border: none;
+  outline: none;
+}
+

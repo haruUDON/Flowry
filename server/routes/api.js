@@ -36,7 +36,8 @@ router.post('/timeline', async (req, res, next) => {
     const query = {
         ...(data.fromDate && { uploaded_at: { $gte: data.fromDate } }),
         ...(data.user && { user: data.user }),
-        ...(data.parent ? { parent_post: data.parent } : { parent_post: null })
+        ...(data.parent ? { parent_post: data.parent } : { parent_post: null }),
+        ...(data.searchText && { text: new RegExp(data.searchText, 'i') }),
     };
     let postsQuery = Post.find(query)
         .populate({
@@ -128,7 +129,7 @@ const calculateFolderSize = (folderPath) => {
   return totalSize;
 };
 
-const MAX_STORAGE_SIZE = 50 * 1024 * 1024; //50MB
+const MAX_STORAGE_SIZE = 10 * 1024 * 1024; //10MB
 
 const generateHashedFileName = (file) => {
   const hash = crypto.createHash('sha256');
@@ -315,6 +316,34 @@ router.post('/posts/report', async (req, res, next) => {
     await post.save();
 
     res.status(200).json({ success: true, message: '投稿の報告を受け付けました' });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
+});
+
+router.post('/notifications/get', async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.session.user })
+    .populate({
+        path: 'notifications',
+        populate: [
+            { path: 'user' },
+            { path: 'post' }
+        ]
+    }).exec();
+
+    user.notifications.forEach(n => {
+      if (!n.is_read) n.is_read = true;
+    });
+
+    await user.save();
+
+    const notifications = user.notifications;
+    notifications.sort((a, b) => {
+      return new Date(b.received_at) - new Date(a.received_at);
+    });
+
+    res.status(200).json({ success: true, message: '通知を取得しました', notifications });
   } catch (err) {
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
