@@ -11,4 +11,4 @@ const AnimeSchema = new mongoose.Schema({
     watchers_count: Number
 },{collection: 'anime'});
 
-exports.Anime = mongoose.model('AnimeSchema', AnimeSchema);
+exports.Anime = mongoose.model('Anime', AnimeSchema);

@@ -9,8 +9,13 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const axios = require('axios');
 
-const server = http.createServer(app); //new
-const io = socketIO(server);
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }
+});
 
 require('dotenv').config();
 
@@ -46,12 +51,38 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-io.on('connection', (socket) => {
-    console.log('A user connected');
+const users = {};
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+
+  // ユーザーが接続したときにユーザーIDを保存
+  socket.on('register', (userId) => {
+    users[userId] = socket.id;
+    console.log(`User ${userId} registered with socket ID: ${socket.id}`);
+  });
+
+  socket.on('like', (data) => {
+    const { postId, userId, postOwnerId } = data;
+    console.log(`Post ${postId} liked by ${userId}, notifying ${postOwnerId}`);
+
+    // いいねされたユーザーに通知を送信
+    const recipientSocketId = users[postOwnerId];
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('notification');
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+    // 切断されたユーザーをusersから削除
+    for (let userId in users) {
+      if (users[userId] === socket.id) {
+        delete users[userId];
+        break;
+      }
+    }
+  });
 });
 
 const api = require('./routes/api');

@@ -16,3 +16,13 @@
 .button:hover {
   background-color: #ff4052;
 }
+
+.card {
+  position: fixed;
+  width: 130px;
+  aspect-ratio: 37 / 50;
+  border: 1px solid black;
+  box-sizing: border-box;
+  bottom: 4%;
+  left: 90%;
+}

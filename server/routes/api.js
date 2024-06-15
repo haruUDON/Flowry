@@ -24,7 +24,11 @@ const transporter = nodemailer.createTransport({
 
 router.get('/auth/check', async (req, res, next) => {
     if (req.session.user) {
-        const user = await User.findOne({ _id: req.session.user });
+        const user = await User.findOne({ _id: req.session.user })
+        .populate({
+          path: 'enthusiastic_anime'
+        })
+        .exec();
         res.status(200).json({ isAuthenticated: true, user });
     } else {
         res.status(201).json({ isAuthenticated: false });
@@ -249,7 +253,7 @@ router.post('/posts/delete', async (req, res, next) => {
     const postId = req.body.postId;
     const user = await User.findOne({ _id: req.session.user });
 
-    const post = await Post.findOne({ _id: postId });;
+    const post = await Post.findOne({ _id: postId });
     if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
 
     if (!user._id.equals(post.user)) return res.status(403).json({ message: 'この操作に必要な権限がありません' });
@@ -272,7 +276,6 @@ router.post('/posts/delete', async (req, res, next) => {
 
     res.status(200).json({ success: true, message: '投稿を削除しました' });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
 });
@@ -282,7 +285,7 @@ router.post('/posts/report', async (req, res, next) => {
     const { postId, reason } = req.body;
     const user = await User.findOne({ _id: req.session.user });
 
-    const post = await Post.findOne({ _id: postId });;
+    const post = await Post.findOne({ _id: postId });
     if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
 
     if (user._id.equals(post.user)) return res.status(403).json({ message: 'この操作に必要な権限がありません' });
@@ -321,6 +324,49 @@ router.post('/posts/report', async (req, res, next) => {
   }
 });
 
+router.post('/posts/like', async (req, res, next) => {
+  try {
+    const { postId } = req.body;
+    const user = await User.findOne({ _id: req.session.user });
+
+    const post = await Post.findOne({ _id: postId });
+    if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
+
+    const postUser = await User.findOne({ _id: post.user });
+
+    if (user.liked_posts.includes(postId)){
+      user.liked_posts.pull(postId);
+      post.likes.pull(user._id);
+    } else {
+      user.liked_posts.push(postId);
+      post.likes.push(user._id);
+
+      let found = postUser.notifications.some(object => 
+        object.type === 'postLiked' && object.post.equals(post._id) && object.user.equals(user._id)
+      );
+
+      if (!found && !postUser._id.equals(user._id)){
+        const notification = {
+          type: 'postLiked',
+          post: post._id,
+          user: user._id 
+        }
+        postUser.notifications.push(notification);
+        await postUser.save();
+        
+        socket.emit('like', { postId, userId: user._id, postOwnerId: postUser._id });
+      }
+    }
+
+    await user.save();
+    await post.save();
+
+    res.status(200).json({ success: true, message: '投稿をいいねしました', user });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
+});
+
 router.post('/notifications/get', async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.session.user })
@@ -344,6 +390,22 @@ router.post('/notifications/get', async (req, res, next) => {
     });
 
     res.status(200).json({ success: true, message: '通知を取得しました', notifications });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
+});
+
+router.post('/enthusiastic/set', async (req, res, next) => {
+  try {
+    const anime = req.body.anime;
+    const user = await User.findOne({ _id: req.session.user });
+
+    user.enthusiastic_anime = anime;
+
+    await user.save();
+
+    if (!anime) return res.status(200).json({ success: true, message: '熱狂モードから退出しました', user });
+    res.status(200).json({ success: true, message: '熱狂モードに突入しました', user });
   } catch (err) {
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }

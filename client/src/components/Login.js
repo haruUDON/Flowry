@@ -77,7 +77,7 @@ const Login = () => {
       <div className={styles.bodyContainer}>
       <hgroup>
         <h1>Welcome Back!</h1>
-        <h3>Flowry</h3>
+        <h3>Animer</h3>
       </hgroup>
       <form onSubmit={handleSubmit}>
         <div className={styles.group}> 

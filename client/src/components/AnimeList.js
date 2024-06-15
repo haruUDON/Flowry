@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from "../styles/AnimeList.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import EpisodeSelector from './EpisodeSelector';
 
-function AnimeList() {
+function AnimeList({ setActiveMenu }) {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [anime, setAnime] = useState([]);
   const [activeAnime, setActiveAnime] = useState(null);
+  const [selectedAnime, setSelectedAnime] = useState(null);
   const containerRef = useRef(null);
 
   const handleSearchChange = (e) => {
@@ -20,6 +22,7 @@ function AnimeList() {
   useEffect(() => {
     let isMounted = true;
     setActiveAnime(null);
+    setSelectedAnime(null);
 
     const fetchData = () => {
       setLoading(true);
@@ -87,6 +90,7 @@ function AnimeList() {
 
   return (
     <>
+      {!selectedAnime ? (
       <div className={styles.menu}>
         <div className={styles.search}>
           <div className={styles.searchLeft}>
@@ -114,9 +118,12 @@ function AnimeList() {
           </div>
         </div>
         <div className={styles.bottom}>
-          <button className={styles.next} disabled={activeAnime ? false : true}>次へ</button>
+          <button className={styles.next} disabled={activeAnime ? false : true} onClick={() => setSelectedAnime(activeAnime)}>次へ</button>
         </div>
       </div>
+      ) : (
+        <EpisodeSelector anime={activeAnime} setActiveMenu={setActiveMenu} />
+      )}
     </>
   )
 }

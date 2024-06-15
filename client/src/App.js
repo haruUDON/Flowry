@@ -14,6 +14,7 @@ import NekkyoMode from './components/NekkyoMode';
 import CreatePostButton from './components/CreatePostButton';
 import Search from './components/Search';
 import Notifications from './components/Notifications';
+import io from 'socket.io-client';
 
 export const UserContext = createContext();
 
@@ -21,6 +22,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   useEffect(() => {
     fetch('/api/auth/check').then(
@@ -29,7 +31,20 @@ function App() {
       data => {
         setIsAuthenticated(data.isAuthenticated)
         setUser(data.user)
+        setUnreadNotifications(data.user.notifications.filter(notification => !notification.is_read).length)
         setIsAuthenticating(false)
+
+        if (data.isAuthenticated) {
+          const socket = io('http://localhost:5000');
+
+          socket.emit('register', data.user._id);
+          
+          socket.on('notification', () => {
+            setUnreadNotifications((prev) => prev + 1);
+          });
+
+          return () => socket.disconnect();
+        }
       }
     ).catch(
       error => {
@@ -41,7 +56,7 @@ function App() {
 
   if (isAuthenticating) {
     return <div className='loading-container'>
-      <span>Flowry</span>
+      <span>Animer</span>
     </div>;
   }
 
@@ -52,7 +67,7 @@ function App() {
           <SnackbarProvider>
             {isAuthenticated &&
               <>
-              <Sidebar />
+              <Sidebar count={unreadNotifications} />
               <CreatePostButton />
               <NekkyoMode />
               </>

@@ -26,8 +26,8 @@
 
 .card {
   width: 111px;
-  height: 150px;
-  border: 1px solid black; /* 枠線のスタイルを設定 */
+  aspect-ratio: 37 / 50;
+  border: 1px solid black;
   margin: 5px;
   box-sizing: border-box;
   position: relative;
@@ -84,8 +84,30 @@
   margin: 0px 10px;
 }
 
+.next {
+  font-size: 13px;
+  display: block;
+  font-weight: bold;
+  width: 60px;
+  padding: 3px 8px;
+  background-color: black;
+  color: white;
+  border: 0;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.next:hover {
+  background-color: #2c2c2c;
+}
+
 .next:disabled {
   opacity: 0.5;
+  cursor: auto;
+}
+
+.next:disabled:hover {
+  background-color: black;
 }
 
 .loading {

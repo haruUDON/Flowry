@@ -4,12 +4,37 @@ import { UserContext } from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+import { useSnackbar } from './Snackbar';
 
 const LikeButton = ({ post, current }) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const { showSnackbar } = useSnackbar();
 
-  const handleClick = (e) => {
-      e.stopPropagation();
+  const handleClick = async (e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch('/api/posts/like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ postId: post._id }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      const { success } = data;
+      if (success) {
+        showSnackbar(data.message);
+        setUser(data.user);
+      }
+    } catch (err) {
+      showSnackbar(err.message);
+    }
   }
 
   return (
