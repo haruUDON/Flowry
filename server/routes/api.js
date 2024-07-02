@@ -42,11 +42,13 @@ router.post('/timeline', async (req, res, next) => {
         ...(data.user && { user: data.user }),
         ...(data.parent ? { parent_post: data.parent } : { parent_post: null }),
         ...(data.searchText && { text: new RegExp(data.searchText, 'i') }),
+        ...(data.animeFilter && { enthusiastic_anime: data.animeFilter }),
     };
     let postsQuery = Post.find(query)
-        .populate({
-            path: 'user'
-        });
+      .populate([
+        { path: 'user' },
+        { path: 'enthusiastic_anime' }
+      ]);
 
     if (data.sort) {
         postsQuery = postsQuery.sort({ uploaded_at: data.sort });
@@ -199,6 +201,10 @@ router.post('/posts/create', upload.single('image'), async (req, res, next) => {
       postParams.image = `${hashedFileName}.${req.file.mimetype.split('/')[1]}`;
     }
 
+    if (user.enthusiastic_anime){
+      postParams.enthusiastic_anime = user.enthusiastic_anime;
+    }
+
     const post = new Post(postParams);
 
     if (parentPost) {
@@ -334,9 +340,12 @@ router.post('/posts/like', async (req, res, next) => {
 
     const postUser = await User.findOne({ _id: post.user });
 
+    let isLikedNow = true;
+
     if (user.liked_posts.includes(postId)){
       user.liked_posts.pull(postId);
       post.likes.pull(user._id);
+      isLikedNow = false;
     } else {
       user.liked_posts.push(postId);
       post.likes.push(user._id);
@@ -361,7 +370,35 @@ router.post('/posts/like', async (req, res, next) => {
     await user.save();
     await post.save();
 
-    res.status(200).json({ success: true, message: '投稿をいいねしました', user });
+    res.status(200).json({ isLikedNow, message: '投稿をいいねしました', user });
+  } catch (err) {
+    res.status(500).json({ message: 'サーバーエラーが発生しました' });
+  }
+});
+
+router.post('/posts/bookmark', async (req, res, next) => {
+  try {
+    const { postId } = req.body;
+    const user = await User.findOne({ _id: req.session.user });
+
+    const post = await Post.findOne({ _id: postId });
+    if (!post) return res.status(400).json({ message: '投稿が見つかりませんでした' });
+
+    let isBookmarkedNow = true;
+
+    if (user.bookmarked_posts.includes(postId)){
+      user.bookmarked_posts.pull(postId);
+      post.bookmarks.pull(user._id);
+      isBookmarkedNow = false;
+    } else {
+      user.bookmarked_posts.push(postId);
+      post.bookmarks.push(user._id);
+    }
+
+    await user.save();
+    await post.save();
+
+    res.status(200).json({ isBookmarkedNow, message: '投稿をブックマークしました', user });
   } catch (err) {
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }

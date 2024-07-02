@@ -34,7 +34,12 @@ const PostSchema = new mongoose.Schema({
             default: []
         }
     ],
-    reports: [ ReportSchema ]
+    reports: [ ReportSchema ],
+    enthusiastic_anime: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Anime',
+      default: null
+    },
 },{collection: 'posts'});
 
 exports.Post = mongoose.model('Post', PostSchema);

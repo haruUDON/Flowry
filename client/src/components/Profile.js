@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import Timeline from './Timeline';
 import { useLocation, useParams } from 'react-router-dom';
 import { UserContext } from '../App';
@@ -59,10 +59,10 @@ const Profile = () => {
     };
   }, [userId, location.state, user]);
 
-  const query = {
+  const query = useMemo(() => ({
     user: userId,
     sort: 'desc'
-  }
+  }), [userId]);
 
   return (
     <div className='timelineContainer'>

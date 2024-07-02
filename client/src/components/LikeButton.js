@@ -27,10 +27,13 @@ const LikeButton = ({ post, current }) => {
         throw new Error(data.message);
       }
 
-      const { success } = data;
-      if (success) {
+      setUser(prevUser => ({
+        ...prevUser,
+        liked_posts: data.user.liked_posts
+      }));
+
+      if (data.isLikedNow) {
         showSnackbar(data.message);
-        setUser(data.user);
       }
     } catch (err) {
       showSnackbar(err.message);

@@ -4,12 +4,40 @@ import { UserContext } from '../App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
+import { useSnackbar } from './Snackbar';
 
 const BookmarkButton = ({ post, current }) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const { showSnackbar } = useSnackbar();
 
-  const handleClick = (e) => {
-      e.stopPropagation();
+  const handleClick = async (e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch('/api/posts/bookmark', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ postId: post._id }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      setUser(prevUser => ({
+        ...prevUser,
+        bookmarked_posts: data.user.bookmarked_posts
+      }));
+
+      if (data.isBookmarkedNow) {
+        showSnackbar(data.message);
+      }
+    } catch (err) {
+      showSnackbar(err.message);
+    }
   }
 
   return (

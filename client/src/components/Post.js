@@ -25,13 +25,13 @@ const Post = ({ post, user, hidePost }) => {
       <div className={styles.right}>
         <div className={styles.detail}>
           <span className={styles.displayName} onClick={(e) => {e.stopPropagation(); navigate(`/profile/${post.user._id}`, { state: { user: post.user } }); }}>
-            {post.user.display_name.length > 20 ? post.user.display_name.slice(0, 20) + '...' : post.user.display_name}
+            {post.user.display_name}
           </span>
           <span className={styles.timestamp}>
             {getTimeDifferenceString(post.uploaded_at)}
           </span>
-          {post.user.enthusiastic_anime &&
-            <img src='/fire.png' alt="Fire" className={styles.fire} />
+          {post.enthusiastic_anime &&
+            <><img src='/fire.png' alt="Fire" className={styles.fire} /><span className={styles.title}>{post.enthusiastic_anime.title}</span></>
           }
         </div>
         <PopupPostMenu post={post} toggleActiveMenu={toggleActiveMenu} hidePost={hidePost} />

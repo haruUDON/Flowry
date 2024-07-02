@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useContext, useMemo } from 'react'
 import Timeline from './Timeline';
+import { UserContext } from '../App';
 
 const Home = () => {
+  const { user } = useContext(UserContext);
 
-  const from = new Date();
-  from.setDate(from.getDate() - 30);
+  const from = useMemo(() => {
+    const date = new Date();
+    date.setDate(date.getDate() - 30);
+    return date;
+  }, []);
 
-  const query = {
+  const query = useMemo(() => ({
     fromDate: from,
-    sort: 'desc'
-  }
+    sort: 'desc',
+    ...(user.enthusiastic_anime && { animeFilter: user.enthusiastic_anime._id }),
+  }), [from, user]);
 
   return (
     <div className='timelineContainer'>

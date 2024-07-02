@@ -9,8 +9,9 @@
   border: none;
   border-radius: 75px;
   cursor: pointer;
-  bottom: 4%;
-  left: 90%;
+  bottom: 8%;
+  left: 85%;
+  z-index: 500;
 }
 
 .button:hover {
@@ -23,6 +24,7 @@
   aspect-ratio: 37 / 50;
   border: 1px solid black;
   box-sizing: border-box;
-  bottom: 4%;
-  left: 90%;
+  bottom: 8%;
+  left: 85%;
+  z-index: 500;
 }
