@@ -66,7 +66,12 @@ router.post('/timeline', async (req, res, next) => {
 
 router.post('/profile', async (req, res, next) => {
     const id = req.body.userId;
-    const user = await User.findOne({ _id: id });
+    const user = await User.findOne({ _id: id })
+    .populate([
+      { path: 'favorite_animes' },
+      { path: 'enthusiastic_anime' }
+    ])
+    .exec();
     res.json({ user });
 });
 
