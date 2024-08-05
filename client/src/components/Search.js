@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Timeline from './Timeline';
 import styles from "../styles/Search.module.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,6 +18,11 @@ const Search = () => {
     }
   };
 
+  const query = useMemo(() => ({
+    sort: 'desc',
+    searchText: search
+  }), [search]);
+
   return (
     <div className='timelineContainer'>
       <div className='postsContainer'>
@@ -35,10 +40,7 @@ const Search = () => {
           </div>
         </div>
         {search && 
-          <Timeline query={{
-            sort: 'desc',
-            searchText: search
-          }} />
+          <Timeline query={query} />
         }
       </div>
     </div>

@@ -221,3 +221,29 @@ text-decoration: none;
 color: black;
 text-decoration: underline;
 }
+
+.favorites {
+  display: flex;
+  line-height: 0;
+  height: auto;
+  border: 2px solid #eeeeee;
+  padding: 10px;
+  margin: 5px;
+  background-color: #ffffff;
+  box-shadow: 2px 2px 5px #eeeeee;
+  justify-content: center;
+  align-items: center;
+}
+
+.favorites p {
+  color: gray;
+  padding: 10px;
+}
+
+.card {
+  width: 130px;
+  aspect-ratio: 37 / 50;
+  border: 1px solid black;
+  margin: 5px 15px;
+  box-sizing: border-box;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from "../styles/CurrentPost.module.css";
 import { getTimeDifferenceString } from './TimeUtil';
@@ -50,9 +50,9 @@ const CurrentPost = () => {
     };
   }, [postId, location.state]);
 
-  const query = {
+  const query = useMemo(() => ({
     parent: postId
-  }
+  }), [postId]);
 
   return (
     <div className='timelineContainer'>

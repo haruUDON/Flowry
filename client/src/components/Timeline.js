@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import styles from "../styles/Timeline.module.css";
 import Post from './Post';
 
-const Timeline = (query) => {
+const Timeline = memo((query) => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -52,6 +52,6 @@ const Timeline = (query) => {
         </div>
     </>
   );
-};
+});
 
 export default Timeline;

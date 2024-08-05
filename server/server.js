@@ -19,7 +19,7 @@ const io = socketIO(server, {
 
 require('dotenv').config();
 
-const PORT = 5000;
+const PORT = 5001;
 
 mongoose.connect(process.env.MONGODB_URL)
 .then(() => console.log("db connected"))

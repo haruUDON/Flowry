@@ -49,14 +49,19 @@
 
 .detail {
   padding: 5px 0;
+  max-width: 95%;
   align-items: center;
   display: flex;
 }
 
 .displayName {
+  max-width: 60%;
   font-weight: bold;
   color: black;
   text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .displayName:visited {
@@ -71,15 +76,26 @@
 }
 
 .timestamp {
+  margin-left: 3px;
   font-size: 80%;
   color: gray;
-  margin-left: 5px;
+  flex-shrink: 0;
 }
 
 .fire {
   margin-left: 4px;
   padding-bottom: 5px;
   width: 20px;
+}
+
+.title {
+  font-size: 80%;
+  flex: 1 1 auto;
+  color: orange;
+  margin-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .text {

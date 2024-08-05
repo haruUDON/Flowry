@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import Timeline from './Timeline';
 import { useLocation, useParams } from 'react-router-dom';
 import { UserContext } from '../App';
@@ -59,10 +59,10 @@ const Profile = () => {
     };
   }, [userId, location.state, user]);
 
-  const query = {
+  const query = useMemo(() => ({
     user: userId,
     sort: 'desc'
-  }
+  }), [userId]);
 
   return (
     <div className='timelineContainer'>
@@ -72,6 +72,7 @@ const Profile = () => {
             <div className={styles.spinner}></div>
         </div>
       ) : (
+        <>
         <div className={styles.profile}>
           <div className={styles.profileHeader}>
             <div className={styles.profileIconContainer}>
@@ -116,6 +117,18 @@ const Profile = () => {
             </p>
           </div>
         </div>
+        <div className={styles.favorites}>
+          {currentUser.favorite_animes && currentUser.favorite_animes.length > 0 ? (
+            currentUser.favorite_animes.map((anime) => (
+              <div key={anime.id} className={styles.card}>
+              <span>{anime.title}</span>
+              </div>
+            ))
+          ) : ( 
+            <p>お気に入りのアニメが設定されていません</p>
+          )}
+        </div>
+        </>
       )}
         <Timeline query={query} />
       </div>
