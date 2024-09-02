@@ -5,7 +5,7 @@ import { faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Post from './Post';
 
-const Notifications = () => {
+const Notifications = ({ setUnreadNotifications }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const Notifications = () => {
     ).then(
       data => {
         if (isMounted) {
+          setUnreadNotifications(0);
           setNotifications(data.notifications);
           setLoading(false);
         }
@@ -43,7 +44,7 @@ const Notifications = () => {
     return () => {
       isMounted = false;
     };
-  }, [])
+  }, [setUnreadNotifications])
 
   return (
     <div className='timelineContainer'>

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { UserContext } from '../App';
 import styles from "../styles/Sidebar.module.css";
 
-const Sidebar = () => {
+const Sidebar = ({ unreadNotifications }) => {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState(false);
@@ -31,9 +31,11 @@ const Sidebar = () => {
       <li title="search"><Link to="/search" className={(currentPath === '/search') ? `${styles.active} ${styles.accessSearch}` : styles.accessSearch}>検索</Link></li>
       <li title="notifications">
         <Link to="/notifications" className={(currentPath === '/notifications') ? `${styles.active} ${styles.accessNotification}` : styles.accessNotification}>通知</Link>
+        {unreadNotifications > 0 && 
         <div className={styles.notificationsCountBadge}>
-          <span className={styles.notificationsCountNumber}></span>
+          <span className={styles.notificationsCountNumber}>{unreadNotifications}</span>
         </div>
+        }
       </li>
       <li title="profile"><Link to={`/profile/${user._id}`} className={currentPath.includes('/profile') ? `${styles.active} ${styles.accessProfile}` : styles.accessProfile}>プロフィール</Link></li>
       <li title="bookmarks"><Link to="/bookmarks" className={(currentPath === '/bookmarks') ? `${styles.active} ${styles.accessBookmark}` : styles.accessBookmark}>ブックマーク</Link></li>

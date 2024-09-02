@@ -335,6 +335,12 @@ router.post('/posts/report', async (req, res, next) => {
   }
 });
 
+function getTargetUserSocketId(userId) {
+  const { userIdToSocketIdMapping } = require('../server.js');
+  console.log(userIdToSocketIdMapping);
+  return userIdToSocketIdMapping[userId];
+}
+
 router.post('/posts/like', async (req, res, next) => {
   try {
     const { postId } = req.body;
@@ -368,7 +374,15 @@ router.post('/posts/like', async (req, res, next) => {
         postUser.notifications.push(notification);
         await postUser.save();
         
-        socket.emit('like', { postId, userId: user._id, postOwnerId: postUser._id });
+        const { io } = require('../server.js');
+
+        const targetUserSocketId = getTargetUserSocketId(postUser._id);
+        if (targetUserSocketId) {
+          io.to(targetUserSocketId).emit('notification', {
+            type: 'like',
+            message: 'あなたの投稿がいいねされました！'
+          });
+        }
       }
     }
 
@@ -377,6 +391,7 @@ router.post('/posts/like', async (req, res, next) => {
 
     res.status(200).json({ isLikedNow, message: '投稿をいいねしました', user });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: 'サーバーエラーが発生しました' });
   }
 });

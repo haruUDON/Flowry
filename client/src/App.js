@@ -18,6 +18,8 @@ import io from 'socket.io-client';
 
 export const UserContext = createContext();
 
+const socket = io('http://localhost:5001');
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -35,15 +37,15 @@ function App() {
         setIsAuthenticating(false)
 
         if (data.isAuthenticated) {
-          const socket = io('http://localhost:5000');
-
           socket.emit('register', data.user._id);
           
           socket.on('notification', () => {
             setUnreadNotifications((prev) => prev + 1);
           });
 
-          return () => socket.disconnect();
+          return () => {
+            socket.off('notification');
+          };
         }
       }
     ).catch(
@@ -67,7 +69,7 @@ function App() {
           <SnackbarProvider>
             {isAuthenticated &&
               <>
-              <Sidebar count={unreadNotifications} />
+              <Sidebar unreadNotifications={unreadNotifications} />
               <CreatePostButton />
               <NekkyoMode />
               </>
@@ -118,7 +120,7 @@ function App() {
                 path="/notifications"
                 element={
                   <PrivateRoute>
-                    <Notifications />
+                    <Notifications setUnreadNotifications={setUnreadNotifications} />
                   </PrivateRoute>
                 }
               />

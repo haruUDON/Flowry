@@ -7,13 +7,17 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
+const cors = require('cors');
 const axios = require('axios');
 
 const server = http.createServer(app);
+
+app.use(cors());
+
 const io = socketIO(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
   }
 });
 
@@ -51,34 +55,23 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-const users = {};
+let userIdToSocketIdMapping = {};
 
 io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
+  console.log('A user connected: ' + socket.id);
 
-  // ユーザーが接続したときにユーザーIDを保存
+  // ユーザーIDが送られてきた場合、そのSocket IDを保存
   socket.on('register', (userId) => {
-    users[userId] = socket.id;
-    console.log(`User ${userId} registered with socket ID: ${socket.id}`);
-  });
-
-  socket.on('like', (data) => {
-    const { postId, userId, postOwnerId } = data;
-    console.log(`Post ${postId} liked by ${userId}, notifying ${postOwnerId}`);
-
-    // いいねされたユーザーに通知を送信
-    const recipientSocketId = users[postOwnerId];
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('notification');
-    }
+    userIdToSocketIdMapping[userId] = socket.id;
+    console.log('User registered with ID:', userId);
   });
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-    // 切断されたユーザーをusersから削除
-    for (let userId in users) {
-      if (users[userId] === socket.id) {
-        delete users[userId];
+    console.log('A user disconnected: ' + socket.id);
+    // ユーザーが切断したらマッピングから削除
+    for (let userId in userIdToSocketIdMapping) {
+      if (userIdToSocketIdMapping[userId] === socket.id) {
+        delete userIdToSocketIdMapping[userId];
         break;
       }
     }
@@ -126,6 +119,10 @@ app.use('/uploads', express.static('uploads'));
 //     }
 // }
 
-app.listen(PORT, () => {console.log("Server started on port 5000")});
+server.listen(PORT, () => {console.log("Server started on port " + PORT)});
 
-module.exports = app;
+module.exports = {
+  app,
+  io,
+  userIdToSocketIdMapping
+};
